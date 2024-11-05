@@ -102,3 +102,17 @@ AS
 				clearAllTables,
 				createAllTables;
 	END
+
+GO;
+
+Create View allCustomerAccounts AS
+	SELECT *
+	FROM Customer_profile p INNER JOIN Customer_Account a 
+	ON p.nationalID = a.nationalID;
+
+GO;
+
+Create View allServicePlans AS
+	SELECT *
+	FROM Service_Plan
+
