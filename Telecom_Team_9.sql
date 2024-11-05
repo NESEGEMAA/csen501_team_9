@@ -32,3 +32,19 @@ AS
 		);
 
 	END
+
+GO;
+
+CREATE VIEW PhysicalStoreVouchers AS
+	SELECT ps.shopID, ps.name, v.voucherID, v.value
+	FROM Physical_Shop INNER JOIN Voucher v
+	ON (ps.shopID = v.shopID)
+
+GO;
+
+CREATE VIEW Num_of_cashback AS
+	SELECT c.walletID, COUNT(c.CashbackID)
+	FROM Cashback c
+	GROUP BY c.walletID
+
+GO;
