@@ -23,7 +23,7 @@ AS
 	BEGIN
 		SELECT @TotalTransactions = COUNT(P.PaymentID) , @TotalPoints = SUM(ISNULL(PG.pointsAmount,0))
 		FROM Payment P
-		INNER JOIN Points_Group ON P.PaymentID = PG.PaymentID
+		LEFT JOIN Points_Group ON P.PaymentID = PG.PaymentID
 		WHERE P.mobileNo = @MobileNo AND P.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP) AND p.status = 'accepted';
 
 		
