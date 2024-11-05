@@ -30,5 +30,5 @@ AS
 	END;
 	DECLARE @MobileNo char(11), @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
 	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
-	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 2); 
+	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
 	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
