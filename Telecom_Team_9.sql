@@ -28,7 +28,26 @@ AS
 
 		
 	END;
-	DECLARE @MobileNo char(11), @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
+	DECLARE @MobileNo char(11) = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
 	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
 	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
 	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
+
+
+-- 2.4 g
+GO;
+CREATE PROCEDURE Account_Highest_Voucher
+@MobileNo char(11),
+@Voucher_id INT OUTPUT
+
+AS
+	BEGIN
+		SELECT TOP 1 @Voucher_id = V.voucherID
+		FROM Voucher V
+		WHERE V.mobileNo = @MobileNo
+		ORDER BY V.value DESC
+	END;
+
+	DECLARE @MobileNo char(11) = '12345678901', @Voucher_id INT;
+	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
+	PRINT ' The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
