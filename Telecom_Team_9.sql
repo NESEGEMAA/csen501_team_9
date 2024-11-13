@@ -559,7 +559,7 @@ AS
 		SET @cashback = 0.1 * @paymentAmount
 
 		INSERT INTO Cashback
-		VALUES(@benefit_id, @walletId, @cashback, CURRENT_TIMESTAMP)
+		VALUES(@benefit_id, @walletId, @cashback, CAST(CURRENT_TIMESTAMP AS DATE))
 	END
 
 GO;
@@ -573,7 +573,7 @@ CREATE PROCEDURE Initiate_balance_payment
 AS
 	BEGIN
 		INSERT INTO Payment
-			VALUES (@amount, CURRENT_TIMESTAMP, @payment_method, 'successful', @MobileNo);
+			VALUES (@amount, CAST(CURRENT_TIMESTAMP AS DATE), @payment_method, 'successful', @MobileNo);
 
 		UPDATE Customer_Account
 		SET balance = balance + @amount
