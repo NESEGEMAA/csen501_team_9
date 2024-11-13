@@ -481,12 +481,11 @@ GO;
 
 -- 2.3 j
 CREATE PROCEDURE Total_Points_Account
-@MobileNo MOBILE
+@MobileNo MOBILE,
+@newPoints INT OUTPUT
 
 AS
 	BEGIN
-		DECLARE @newPoints INT
-		
 		SELECT @newPoints = SUM(pointsAmount)
 		FROM Point_Group pg INNER JOIN Benefit b
 		ON (pg.benefitID = b.benefitID)
