@@ -13,8 +13,6 @@ FROM varchar(50);
 CREATE TYPE MOBILE  
 FROM char(11);
 
-
-
 -- 2.1 b
 GO;
 CREATE PROCEDURE createAllTables
