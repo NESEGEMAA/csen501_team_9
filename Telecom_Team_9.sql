@@ -565,5 +565,20 @@ AS
 GO;
 
 -- 2.4 n
+CREATE PROCEDURE Initiate_balance_payment
+@MobileNo MOBILE,
+@amount decimal(10,1),
+@payment_method ALPHA
+
+AS
+	BEGIN
+		INSERT INTO Payment
+			VALUES (@amount, CURRENT_TIMESTAMP, @payment_method, 'successful', @MobileNo);
+
+		UPDATE Customer_Account
+		SET balance = balance + @amount
+		WHERE mobileNo = @MobileNo;
+	END
+GO;
 
 -- 2.4 o
