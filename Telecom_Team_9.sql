@@ -457,8 +457,27 @@ GO;
 -- 2.3 g
 
 -- 2.3 h
+GO;
 
 -- 2.3 i
+CREATE FUNCTION Wallet_MobileNo (@MobileNo MOBILE)
+RETURNS BIT
+AS
+	BEGIN
+		DECLARE @result BIT;
+		IF EXISTS (
+				SELECT mobileNo
+				FROM Wallet
+				WHERE mobileNo = @MobileNo
+			)
+			SET @result = 1;
+		ELSE
+			SET @result = 0;
+
+		RETURN @result;
+	END
+
+GO;
 
 -- 2.3 j
 
