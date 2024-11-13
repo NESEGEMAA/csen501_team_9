@@ -541,6 +541,29 @@ GO;
 -- 2.4 l
 
 -- 2.4 m
+CREATE PROCEDURE Payment_wallet_cashback
+@MobileNo char(11),
+@payment_id INT,
+@benefit_id INT
+
+AS
+	BEGIN
+		DECLARE @paymentAmount decimal(10,1)
+		DECLARE @walletID INT
+		DECLARE @cashback INT
+
+		SELECT @paymentAmount = amount, @walletID = walletID
+		FROM Payment INNER JOIN Wallet
+		ON (Payment.mobileNo = Wallet.mobileNo)
+		WHERE paymentID = @payment_id
+
+		SET @cashback = 0.1 * @paymentAmount
+
+		INSERT INTO Cashback
+		VALUES(@benefit_id, @walletId, @cashback, CURRENT_TIMESTAMP)
+	END
+
+GO;
 
 -- 2.4 n
 
