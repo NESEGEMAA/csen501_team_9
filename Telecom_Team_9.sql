@@ -542,9 +542,55 @@ AS
 GO;
 
 -- 2.4 h
+GO;
+CREATE FUNCTION Remaining_plan_amount (@MobileNo char(11), @plan_name varchar(50))
+RETURNS  DECIMAL (10,1)
+AS
+BEGIN
+	DECLARE @price INT;
+	DECLARE @payment_amount DECIMAL(10,1);
+	DECLARE @Remaining_amount DECIMAL(10,1);
+
+	SELECT @price = ISNULL(sp.price,0), @payment_amount = SUM(ISNULL(p.amount,0))
+	FROM Payment p
+	LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
+	LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
+	WHERE p.mobileNo = @MobileNo AND sp.plan_name = @plan_name;
+
+	IF @payment_amount < @price
+		SET @Remaining_amount = @price - @payment_amount;
+	ELSE
+		SET @Remaining_amount = 0;
+
+	RETURN @Remaining_amount;
+
+	END;
 
 -- 2.4 i
+GO;
+CREATE FUNCTION Extra_plan_amount(@MobileNo char(11), @plan_name varchar(50))
+RETURNS DECIMAL(10,1)
+AS
+BEGIN
+	DECLARE @price INT;
+	DECLARE @payment_amount DECIMAL(10,1);
+	DECLARE @Extra_amount DECIMAL(10,1);
 
+	SELECT @price = ISNULL(sp.price,0), @payment_amount = SUM(ISNULL(p.amount,0))
+	FROM Payment p
+	LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
+	LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
+	WHERE p.mobileNo = @MobileNo AND sp.plan_name = @plan_name;
+
+	IF @payment_amount > @price
+		SET @Extra_amount = @payment_amount - @price;
+	ELSE
+		SET @Extra_amount = 0;
+		
+
+	RETURN @Extra_amount;
+
+END;
 -- 2.4 j
 
 -- 2.4 k
@@ -552,6 +598,7 @@ GO;
 -- 2.4 l
 
 -- 2.4 m
+GO;
 CREATE PROCEDURE Payment_wallet_cashback
 @MobileNo char(11),
 @payment_id INT,
