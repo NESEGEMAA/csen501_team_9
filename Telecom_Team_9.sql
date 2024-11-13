@@ -431,8 +431,20 @@ GO;
 
 -- 2.3 e
 GO;
+CREATE FUNCTION Account_SMS_Offers (@MobileNo char(11))
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT eo.offerID, b.description, eo.SMS_offered, eo.internet_offered, eo.minutes_offered, b.validity_date 
+	FROM Exclusive_Offer eo
+	INNER JOIN Benefits b ON eo.benefitID = b.benefitID
+	WHERE b.mobileNo = @MobileNo AND eo.SMS_offered > 0
+
+)
 
 -- 2.3 f
+GO;
 CREATE PROCEDURE Account_Payment_Points
 @MobileNo char(11),
 @TotalTransactions int OUTPUT,
