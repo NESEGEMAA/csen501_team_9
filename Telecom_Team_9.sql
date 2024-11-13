@@ -1,5 +1,58 @@
 CREATE DATABASE Telecom_Team_9;
 
+-- 2.2 e
+GO;
+CREATE VIEW AllShops AS
+SELECT *
+FROM Shop S LEFT JOIN Physical_Shop PS ON S.shopID = PS.shopID LEFT JOIN E_shop ON S.shopID = ES.shopID;
+
+-- 2.2 f
+GO;
+CREATE VIEW allResolvedTickets AS
+SELECT *
+FROM Technical_Support_Ticket
+WHERE status = 'resolved';
+
+-- 2.3 f
+GO;
+CREATE PROCEDURE Account_Payment_Points
+@MobileNo char(11),
+@TotalTransactions int OUTPUT,
+@TotalPoints decimal(10,2) OUTPUT
+
+AS
+	BEGIN
+		SELECT @TotalTransactions = COUNT(P.PaymentID) , @TotalPoints = SUM(ISNULL(PG.pointsAmount,0))
+		FROM Payment P
+		LEFT JOIN Points_Group PG ON P.PaymentID = PG.PaymentID
+		WHERE P.mobileNo = @MobileNo AND P.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP) AND P.status = 'accepted';
+
+		
+	END;
+	DECLARE @MobileNo char(11) = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
+	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
+	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
+	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
+
+
+-- 2.4 g
+GO;
+CREATE PROCEDURE Account_Highest_Voucher
+@MobileNo char(11),
+@Voucher_id INT OUTPUT
+
+AS
+	BEGIN
+		SELECT TOP 1 @Voucher_id = V.voucherID
+		FROM Voucher V
+		WHERE V.mobileNo = @MobileNo
+		ORDER BY V.value DESC
+	END;
+
+	DECLARE @MobileNo char(11) = '12345678901', @Voucher_id INT;
+	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
+	PRINT ' The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
+
 GO;
 
 
