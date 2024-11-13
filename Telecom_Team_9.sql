@@ -13,9 +13,10 @@ FROM varchar(50);
 CREATE TYPE MOBILE  
 FROM char(11);
 
-GO;
+
 
 -- 2.1 b
+GO;
 CREATE PROCEDURE createAllTables
 AS
 	BEGIN
@@ -36,11 +37,12 @@ AS
 			account_type ALPHA,
 			start_date DATE,
 			status ALPHA,
-			point INT,
+			point INT DEFAULT 0,
+			nationalID INT,
 			PRIMARY KEY (mobileNo) ,
 			FOREIGN KEY (nationalID) REFERENCES Customer_Profile(nationalID)
 			ON DELETE CASCADE
-			ON UPDATE  CASCADE
+			ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Service_Plan(
@@ -55,16 +57,16 @@ AS
 		);
 
 		CREATE TABLE Subscribtion(
-			mobileNo char(11) ,
+			mobileNo char(11),
 			planID int,
 			subscribtion_date date,
 			status ALPHA,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (mobileNo,planID)
 		);
 
@@ -72,17 +74,17 @@ AS
 			usageID int,
 			start_date date,
 			end_date date,
-			consumption int,
+			data_consumption int,
 			minutes_used int,
 			SMS_sent int ,
 			mobileNo MOBILE,
 			planID int , 
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (usageID)
 		);
     
@@ -95,7 +97,7 @@ AS
 			mobileNo MOBILE,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (paymentID)
 		)
 		
@@ -151,7 +153,7 @@ AS
 			PRIMARY KEY (benefitID)
 		);
 
-		CREATE TABLE Point_Group (
+		CREATE TABLE Points_Group (
 			pointID int ,
 			benefitID int , 
 			pointsAmount int ,
@@ -217,20 +219,20 @@ AS
 			working_hours ALPHA,
 			FOREIGN KEY (shopID) REFERENCES Shop(shopID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (shopID),
 		)
 		CREATE TABLE E_Shop (
 			shopID int ,
 			URL ALPHA ,
-			rating ALPHA,
+			rating int,
 			FOREIGN KEY (shopID) REFERENCES Shop(shopID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (shopID),
 		);
 
-		CREATE TABLE VOUCHER(
+		CREATE TABLE Voucher(
 			voucherID int ,
 			value int ,
 			expiry_date date ,
@@ -240,10 +242,10 @@ AS
 			redeem_date date ,
 			FOREIGN KEY (shopID) REFERENCES Shop(shopID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (voucherID)
 		)
 
@@ -255,14 +257,15 @@ AS
 			status STATUS ,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (ticketID)
 		)
 	END
 
-GO;
+
 
 -- 2.1 c
+GO;
 Create Procedure dropAllTables
 AS
 
@@ -306,9 +309,10 @@ AS
 
 	END
 
-GO;
+
 
 -- 2.1 d
+GO;
 Create Procedure dropAllProceduresFunctionsViews
 
 AS
@@ -320,9 +324,10 @@ AS
 				createAllTables;
 	END
 
-GO;
+
 
 -- 2.1 e
+GO;
 Create Procedure clearAllTables
 AS
 
@@ -366,17 +371,19 @@ AS
 
 	END
 
-GO;
+
 
 -- 2.2 a
+GO;
 Create View allCustomerAccounts AS
 	SELECT *
 	FROM Customer_profile p INNER JOIN Customer_Account a 
 	ON p.nationalID = a.nationalID;
 
-GO;
+
 
 -- 2.2 b
+GO;
 Create View allServicePlans AS
 	SELECT *
 	FROM Service_Plan
@@ -384,42 +391,46 @@ Create View allServicePlans AS
 -- 2.2 c
 
 -- 2.2 d
-GO;
+
 
 -- 2.2 e
+GO;
 CREATE VIEW AllShops AS
 SELECT *
 FROM Shop S LEFT JOIN Physical_Shop PS ON S.shopID = PS.shopID LEFT JOIN E_shop ON S.shopID = ES.shopID;
 
-GO;
+
 
 -- 2.2 f
+GO;
 CREATE VIEW allResolvedTickets AS
 SELECT *
 FROM Technical_Support_Ticket
 WHERE status = 'resolved';
 
-GO;
+
 
 -- 2.2 g
 
 -- 2.2 h
-GO;
+
 
 -- 2.2 i
+GO;
 CREATE VIEW PhysicalStoreVouchers AS
 	SELECT ps.shopID, ps.name, v.voucherID, v.value
 	FROM Physical_Shop INNER JOIN Voucher v
 	ON (ps.shopID = v.shopID)
-GO;
+
 
 -- 2.2 j
+GO;
 CREATE VIEW Num_of_cashback AS
 	SELECT c.walletID, COUNT(c.CashbackID)
 	FROM Cashback c
 	GROUP BY c.walletID
 
-GO;
+
 
 -- 2.3 a
 
@@ -464,14 +475,15 @@ AS
 	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
 	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
 
-GO;
+
 
 -- 2.3 g
 
 -- 2.3 h
-GO;
+
 
 -- 2.3 i
+GO;
 CREATE FUNCTION Wallet_MobileNo (@MobileNo MOBILE)
 RETURNS BIT
 AS
@@ -489,9 +501,10 @@ AS
 		RETURN @result;
 	END
 
-GO;
+
 
 -- 2.3 j
+GO;
 CREATE PROCEDURE Total_Points_Account
 @MobileNo MOBILE,
 @newPoints INT OUTPUT
@@ -520,9 +533,10 @@ GO;
 -- 2.4 e
 
 -- 2.4 f
-GO;
+
 
 -- 2.4 g
+GO;
 CREATE PROCEDURE Account_Highest_Voucher
 @MobileNo char(11),
 @Voucher_id INT OUTPUT
@@ -539,7 +553,7 @@ AS
 	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
 	PRINT ' The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
 
-GO;
+
 
 -- 2.4 h
 GO;
