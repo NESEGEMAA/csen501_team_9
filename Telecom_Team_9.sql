@@ -1,61 +1,9 @@
+-- 2.1 a
 CREATE DATABASE Telecom_Team_9;
 
--- 2.2 e
-GO;
-CREATE VIEW AllShops AS
-SELECT *
-FROM Shop S LEFT JOIN Physical_Shop PS ON S.shopID = PS.shopID LEFT JOIN E_shop ON S.shopID = ES.shopID;
-
--- 2.2 f
-GO;
-CREATE VIEW allResolvedTickets AS
-SELECT *
-FROM Technical_Support_Ticket
-WHERE status = 'resolved';
-
--- 2.3 f
-GO;
-CREATE PROCEDURE Account_Payment_Points
-@MobileNo char(11),
-@TotalTransactions int OUTPUT,
-@TotalPoints decimal(10,2) OUTPUT
-
-AS
-	BEGIN
-		SELECT @TotalTransactions = COUNT(P.PaymentID) , @TotalPoints = SUM(ISNULL(PG.pointsAmount,0))
-		FROM Payment P
-		LEFT JOIN Points_Group PG ON P.PaymentID = PG.PaymentID
-		WHERE P.mobileNo = @MobileNo AND P.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP) AND P.status = 'accepted';
-
-		
-	END;
-	DECLARE @MobileNo char(11) = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
-	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
-	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
-	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
-
-
--- 2.4 g
-GO;
-CREATE PROCEDURE Account_Highest_Voucher
-@MobileNo char(11),
-@Voucher_id INT OUTPUT
-
-AS
-	BEGIN
-		SELECT TOP 1 @Voucher_id = V.voucherID
-		FROM Voucher V
-		WHERE V.mobileNo = @MobileNo
-		ORDER BY V.value DESC
-	END;
-
-	DECLARE @MobileNo char(11) = '12345678901', @Voucher_id INT;
-	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
-	PRINT ' The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
-
 GO;
 
-
+-- Custome datatypes from guidelines
 CREATE TYPE ALPHA  
 FROM varchar(50);
 
@@ -66,6 +14,8 @@ CREATE TYPE MOBILE
 FROM char(11);
 
 GO;
+
+-- 2.1 b
 CREATE PROCEDURE createAllTables
 AS
 	BEGIN
@@ -310,51 +260,9 @@ AS
 		)
 	END
 
-Create Procedure clearAllTables
-AS
-
-	BEGIN
-
-		DELETE FROM Customer_Profile;
-
-		DELETE FROM Customer_Account;
-
-		DELETE FROM Service_Plan;
-
-		DELETE FROM Subscription;
-
-		DELETE FROM Plan_Usage;
-
-		DELETE FROM Payment;
-
-		DELETE FROM Process_Payment;
-
-		DELETE FROM Wallet;
-
-		DELETE FROM Transfer_money;
-
-		DELETE FROM Benefits;
-
-		DELETE FROM Points_Group;
-
-		DELETE FROM Exclusive_Offer;
-
-		DELETE FROM Cashback;
-
-		DELETE FROM Plan_Provides_Benefits;
-
-		DELETE FROM Shop;
-
-		DELETE FROM E_shop;
-
-		DELETE FROM	Voucher;
-
-		DELETE FROM Technical_Support_Ticket;
-
-	END
-
 GO;
 
+-- 2.1 c
 Create Procedure dropAllTables
 AS
 
@@ -400,20 +308,7 @@ AS
 
 GO;
 
-CREATE VIEW PhysicalStoreVouchers AS
-	SELECT ps.shopID, ps.name, v.voucherID, v.value
-	FROM Physical_Shop INNER JOIN Voucher v
-	ON (ps.shopID = v.shopID)
-
-GO;
-
-CREATE VIEW Num_of_cashback AS
-	SELECT c.walletID, COUNT(c.CashbackID)
-	FROM Cashback c
-	GROUP BY c.walletID
-
-GO;
-
+-- 2.1 d
 Create Procedure dropAllProceduresFunctionsViews
 
 AS
@@ -427,6 +322,53 @@ AS
 
 GO;
 
+-- 2.1 e
+Create Procedure clearAllTables
+AS
+
+	BEGIN
+
+		DELETE FROM Customer_Profile;
+
+		DELETE FROM Customer_Account;
+
+		DELETE FROM Service_Plan;
+
+		DELETE FROM Subscription;
+
+		DELETE FROM Plan_Usage;
+
+		DELETE FROM Payment;
+
+		DELETE FROM Process_Payment;
+
+		DELETE FROM Wallet;
+
+		DELETE FROM Transfer_money;
+
+		DELETE FROM Benefits;
+
+		DELETE FROM Points_Group;
+
+		DELETE FROM Exclusive_Offer;
+
+		DELETE FROM Cashback;
+
+		DELETE FROM Plan_Provides_Benefits;
+
+		DELETE FROM Shop;
+
+		DELETE FROM E_shop;
+
+		DELETE FROM	Voucher;
+
+		DELETE FROM Technical_Support_Ticket;
+
+	END
+
+GO;
+
+-- 2.2 a
 Create View allCustomerAccounts AS
 	SELECT *
 	FROM Customer_profile p INNER JOIN Customer_Account a 
@@ -434,6 +376,136 @@ Create View allCustomerAccounts AS
 
 GO;
 
+-- 2.2 b
 Create View allServicePlans AS
 	SELECT *
 	FROM Service_Plan
+
+-- 2.2 c
+
+-- 2.2 d
+GO;
+
+-- 2.2 e
+CREATE VIEW AllShops AS
+SELECT *
+FROM Shop S LEFT JOIN Physical_Shop PS ON S.shopID = PS.shopID LEFT JOIN E_shop ON S.shopID = ES.shopID;
+
+GO;
+
+-- 2.2 f
+CREATE VIEW allResolvedTickets AS
+SELECT *
+FROM Technical_Support_Ticket
+WHERE status = 'resolved';
+
+GO;
+
+-- 2.2 g
+
+-- 2.2 h
+GO;
+
+-- 2.2 i
+CREATE VIEW PhysicalStoreVouchers AS
+	SELECT ps.shopID, ps.name, v.voucherID, v.value
+	FROM Physical_Shop INNER JOIN Voucher v
+	ON (ps.shopID = v.shopID)
+GO;
+
+-- 2.2 j
+CREATE VIEW Num_of_cashback AS
+	SELECT c.walletID, COUNT(c.CashbackID)
+	FROM Cashback c
+	GROUP BY c.walletID
+
+GO;
+
+-- 2.3 a
+
+-- 2.3 b
+
+-- 2.3 c
+
+-- 2.3 d
+
+-- 2.3 e
+GO;
+
+-- 2.3 f
+CREATE PROCEDURE Account_Payment_Points
+@MobileNo char(11),
+@TotalTransactions int OUTPUT,
+@TotalPoints decimal(10,2) OUTPUT
+
+AS
+	BEGIN
+		SELECT @TotalTransactions = COUNT(P.PaymentID) , @TotalPoints = SUM(ISNULL(PG.pointsAmount,0))
+		FROM Payment P
+		LEFT JOIN Points_Group PG ON P.PaymentID = PG.PaymentID
+		WHERE P.mobileNo = @MobileNo AND P.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP) AND P.status = 'accepted';
+
+		
+	END;
+	DECLARE @MobileNo char(11) = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
+	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
+	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
+	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
+
+GO;
+
+-- 2.3 g
+
+-- 2.3 h
+
+-- 2.3 i
+
+-- 2.3 j
+
+-- 2.4 a
+
+-- 2.4 b
+
+-- 2.4 c
+
+-- 2.4 d
+
+-- 2.4 e
+
+-- 2.4 f
+GO;
+
+-- 2.4 g
+CREATE PROCEDURE Account_Highest_Voucher
+@MobileNo char(11),
+@Voucher_id INT OUTPUT
+
+AS
+	BEGIN
+		SELECT TOP 1 @Voucher_id = V.voucherID
+		FROM Voucher V
+		WHERE V.mobileNo = @MobileNo
+		ORDER BY V.value DESC
+	END;
+
+	DECLARE @MobileNo char(11) = '12345678901', @Voucher_id INT;
+	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
+	PRINT ' The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
+
+GO;
+
+-- 2.4 h
+
+-- 2.4 i
+
+-- 2.4 j
+
+-- 2.4 k
+
+-- 2.4 l
+
+-- 2.4 m
+
+-- 2.4 n
+
+-- 2.4 o
