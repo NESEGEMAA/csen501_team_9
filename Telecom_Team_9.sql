@@ -46,20 +46,20 @@ AS
 		);
 
 		CREATE TABLE Service_Plan(
-			planID int ,
-			SMS_offered int,
-			minutes_offered int,
-			data_offered int,
+			planID INT IDENTITY(1,1),
+			SMS_offered INT,
+			minutes_offered INT,
+			data_offered INT,
 			name VARCHAR(10),
-			price int,
+			price INT,
 			description ALPHA,
 			PRIMARY KEY(planID)
 		);
 
 		CREATE TABLE Subscribtion(
 			mobileNo char(11),
-			planID int,
-			subscribtion_date date,
+			planID INT,
+			subscribtion_date DATE,
 			status ALPHA,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
@@ -71,14 +71,14 @@ AS
 		);
 
 		CREATE TABLE Plan_Usage(
-			usageID int,
-			start_date date,
-			end_date date,
-			data_consumption int,
-			minutes_used int,
-			SMS_sent int ,
+			usageID INT IDENTITY(1,1),
+			start_date DATE,
+			end_date DATE,
+			data_consumption INT,
+			minutes_used INT,
+			SMS_sent INT,
 			mobileNo MOBILE,
-			planID int , 
+			planID INT, 
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
@@ -89,10 +89,10 @@ AS
 		);
     
 		CREATE TABLE Payment(
-			paymentID int , 
+			paymentID INT IDENTITY(1,1), 
 			amount decimal(10,1),
 			date_of_payment date,
-			payment_method ALPHA ,
+			payment_method ALPHA,
 			status STATUS,
 			mobileNo MOBILE,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
@@ -102,8 +102,8 @@ AS
 		)
 		
 		CREATE TABLE Process_Payment(
-			paymentID int ,
-			planID int ,
+			paymentID INT,
+			planID INT,
 			remaining_balance decimal(10,1),
 			extra_amount decimal(10,1),
 			FOREIGN KEY (paymentID) REFERENCES Payment(paymentID)
@@ -111,41 +111,41 @@ AS
 				ON UPDATE  CASCADE,
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 
 		);
 		CREATE TABLE Wallet (
-			walletID int ,
+			walletID INT IDENTITY(1,1),
 			current_balance decimal(10,2),
 			currency ALPHA,
-			last_modified_date date ,
-			nationalID int ,
+			last_modified_date DATE,
+			nationalID INT,
 			mobileNo  MOBILE ,
 			FOREIGN KEY (nationalID) REFERENCES Customer_Profile(nationalID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
-			PRIMARY KEY(walltID)
+				ON UPDATE CASCADE,
+			PRIMARY KEY(walletID)
 		);
 
 		CREATE TABLE Transfer_Money(
-			walletID1 int ,
-			walletID2 int ,
-			transfer_id int,
+			walletID1 INT,
+			walletID2 INT,
+			transfer_id INT IDENTITY(1,1),
 			amount decimal(10,2),
-			transfer_date date,
+			transfer_date DATE,
 			FOREIGN KEY (walletID1) REFERENCES Wallet(walletID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			FOREIGN KEY (walletID2) REFERENCES Wallet(walletID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (walletID1 , walletID2 , transfer_id)
 		);
-		CREATE TABLE Benifits(
-			benefitID int ,
-			description ALPHA ,
-			vaidity_date date,
-			status STATUS ,
+		CREATE TABLE Benefits(
+			benefitID INT IDENTITY(1,1),
+			description ALPHA,
+			vaidity_date DATE,
+			status STATUS,
 			mobileNo MOBILE,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
@@ -154,10 +154,10 @@ AS
 		);
 
 		CREATE TABLE Points_Group (
-			pointID int ,
-			benefitID int , 
-			pointsAmount int ,
-			PaymentID int ,
+			pointID INT IDENTITY(1,1),
+			benefitID INT, 
+			pointsAmount INT,
+			PaymentID INT,
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
 				ON UPDATE  CASCADE,
@@ -168,11 +168,11 @@ AS
 		);
 
 		CREATE TABLE Exclusive_Offer(		
-			offerID int ,
-			benefitID int ,
-			internet_offered int ,
-			SMS_offered int ,
-			minutes_offered int ,
+			offerID INT IDENTITY(1,1),
+			benefitID INT,
+			internet_offered INT,
+			SMS_offered INT,
+			minutes_offered INT,
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
 				ON UPDATE  CASCADE,
@@ -180,11 +180,11 @@ AS
 		);
 
 		CREATE TABLE Cashback (
-			CashbackID int ,
-			benefitID int ,
-			walletID int ,
-			amount int ,
-			credit_date date ,
+			CashbackID INT IDENTITY(1,1),
+			benefitID INT,
+			walletID INT,
+			amount INT,
+			credit_date DATE,
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
 				ON UPDATE  CASCADE,
@@ -195,8 +195,8 @@ AS
 		);
 
 		CREATE TABLE Plan_Provides_Benefits (
-			benefitID int ,
-			planID int ,
+			benefitID INT,
+			planID INT,
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
 				ON UPDATE  CASCADE,
@@ -207,15 +207,15 @@ AS
 		);
 
 		CREATE TABLE Shop(
-			shopID int ,
+			shopID INT IDENTITY(1,1),
 			name ALPHA ,
 			category ALPHA ,
 			PRIMARY KEY (shopID)
 		);
 
 		CREATE TABLE Physical_Shop (
-			shopID int ,
-			address ALPHA ,
+			shopID INT,
+			address ALPHA,
 			working_hours ALPHA,
 			FOREIGN KEY (shopID) REFERENCES Shop(shopID)
 				ON DELETE CASCADE
@@ -223,9 +223,9 @@ AS
 			PRIMARY KEY (shopID),
 		)
 		CREATE TABLE E_Shop (
-			shopID int ,
-			URL ALPHA ,
-			rating int,
+			shopID INT,
+			URL ALPHA,
+			rating INT,
 			FOREIGN KEY (shopID) REFERENCES Shop(shopID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
@@ -233,13 +233,13 @@ AS
 		);
 
 		CREATE TABLE Voucher(
-			voucherID int ,
-			value int ,
-			expiry_date date ,
-			points int ,
-			mobileNo MOBILE ,
-			shopID int,
-			redeem_date date ,
+			voucherID INT IDENTITY(1,1),
+			value INT,
+			expiry_date DATE,
+			points INT,
+			mobileNo MOBILE,
+			shopID INT,
+			redeem_date DATE,
 			FOREIGN KEY (shopID) REFERENCES Shop(shopID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
@@ -250,11 +250,11 @@ AS
 		)
 
 		CREATE TABLE Technical_Support_Ticket(
-			ticketID int ,
-			mobileNo MOBILE ,
-			issue_description ALPHA ,
-			priority_level int ,
-			status STATUS ,
+			ticketID INT IDENTITY(1,1),
+			mobileNo MOBILE,
+			issue_description ALPHA,
+			priority_level INT,
+			status STATUS,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
