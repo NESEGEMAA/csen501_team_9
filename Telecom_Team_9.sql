@@ -299,9 +299,11 @@ AS
 
 		DROP TABLE Shop;
 
+		DROP TABLE Physical_Shop;
+
 		DROP TABLE E_shop;
 
-		DROP TABLE	Voucher;
+		DROP TABLE Voucher;
 
 		DROP TABLE Technical_Support_Ticket;
 
@@ -360,6 +362,8 @@ AS
 		DELETE FROM Plan_Provides_Benefits;
 
 		DELETE FROM Shop;
+
+		DELETE FROM Physical_Shop;
 
 		DELETE FROM E_shop;
 
