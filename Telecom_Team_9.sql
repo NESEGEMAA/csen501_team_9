@@ -319,9 +319,53 @@ AS
 
 	BEGIN
 			DROP PROCEDURE
+				createAllTables,
 				dropAllTables,
 				clearAllTables,
-				createAllTables;
+				Account_Plan,
+				Benefits_Account,
+				Total_Points_Account,
+				Unsubscribed_Plans,
+				Ticket_Account_Customer,
+				Account_Highest_Voucher,
+				Top_Successful_Payments,
+				Initiate_plan_payment,
+				Payment_wallet_cashback,
+				Initiate_balance_payment,
+				Redeem_voucher_points;
+
+
+
+
+			DROP FUNCTION
+				Account_Plan_date,
+				Account_Usage_Plan,
+				Account_SMS_Offers,
+				Account_Payment_Points,
+				Wallet_Cashback_Amount,
+				Wallet_Transfer_Amount,
+				Wallet_MobileNo,
+				AccountLoginValidation,
+				Consumption,
+				Usage_Plan_CurrentMonth,
+				Cashback_Wallet_Customer,
+				Remaining_plan_amount,
+				Extra_plan_amount,
+				Subscribed_plans_5_Months;
+
+
+
+			DROP VIEW
+				allCustomerAccounts,
+				allServicePlans,
+				allBenefits,
+				AccountPayments,
+				allShops,
+				allResolvedTickets,
+				CustomerWallet,
+				E_shopVouchers,
+				PhysicalStoreVouchers,
+				Num_of_cashback;
 	END
 
 
