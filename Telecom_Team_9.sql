@@ -13,8 +13,6 @@ FROM varchar(50);
 CREATE TYPE MOBILE  
 FROM char(11);
 
-
-
 -- 2.1 b
 GO;
 CREATE PROCEDURE createAllTables
@@ -632,11 +630,70 @@ AS
 		SET @cashback = 0.1 * @paymentAmount
 
 		INSERT INTO Cashback
-		VALUES(@benefit_id, @walletId, @cashback, CURRENT_TIMESTAMP)
+		VALUES(@benefit_id, @walletId, @cashback, CAST(CURRENT_TIMESTAMP AS DATE))
 	END
 
 GO;
 
 -- 2.4 n
+CREATE PROCEDURE Initiate_balance_payment
+@MobileNo MOBILE,
+@amount decimal(10,1),
+@payment_method ALPHA
+
+AS
+	BEGIN
+		INSERT INTO Payment
+			VALUES (@amount, CAST(CURRENT_TIMESTAMP AS DATE), @payment_method, 'successful', @MobileNo);
+
+		UPDATE Customer_Account
+		SET balance = balance + @amount
+		WHERE mobileNo = @MobileNo;
+	END
+GO;
 
 -- 2.4 o
+CREATE PROCEDURE Redeem_voucher_points
+@MobileNo MOBILE,
+@voucher_id INT
+
+AS
+	BEGIN
+		DECLARE @current_points INT
+		DECLARE @points INT
+		DECLARE @expiry_date DATE
+
+		-- Check expiry date of the voucher
+		SELECT @expiry_date = expiry_date
+		FROM Voucher
+		WHERE voucherID = @voucher_id
+
+		-- If voucher not expired, then continue
+		IF @expiry_date > CAST(CURRENT_TIMESTAMP AS DATE)
+		BEGIN
+			-- Getting the user's current points
+			SELECT @current_points = point
+			FROM Customer_Account
+			WHERE mobileNo = @MobileNO;
+
+			-- Getting the amount of points needed to redeem the voucher in question
+			SELECT @points = points
+			FROM Voucher
+			WHERE voucherID = @voucher_id
+			
+			-- Checking whether the points the user has are enough to redeem the voucher, if so continue
+			IF @current_points >= @points
+			BEGIN
+				-- Deducting the points needed to redeem the voucher from the user points
+				UPDATE Customer_Account
+				SET point = @current_points - @points
+				WHERE mobileNo = @MobileNO;
+
+				-- Update the redemption date of the voucher in question to the date of the execution of the code
+				UPDATE Voucher
+				SET redeem_date = CAST(CURRENT_TIMESTAMP AS DATE)
+			END
+		END
+	END
+
+GO;
