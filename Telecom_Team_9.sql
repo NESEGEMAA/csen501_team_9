@@ -106,7 +106,7 @@ AS
 			extra_amount decimal(10,1),
 			FOREIGN KEY (paymentID) REFERENCES Payment(paymentID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
@@ -147,7 +147,7 @@ AS
 			mobileNo MOBILE,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (benefitID)
 		);
 
@@ -158,10 +158,10 @@ AS
 			PaymentID INT,
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			FOREIGN KEY (PaymentID) REFERENCES Payment(paymentID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY(pointsID , benefitID)
 		);
 
@@ -173,7 +173,7 @@ AS
 			minutes_offered INT,
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY(offerID , benefitID)
 		);
 
@@ -185,10 +185,10 @@ AS
 			credit_date DATE,
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			FOREIGN KEY (walletID) REFERENCES Wallet(walletID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (CashbackID , benefitID , walletID)
 		);
 
@@ -197,10 +197,10 @@ AS
 			planID INT,
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
-				ON UPDATE  CASCADE,
+				ON UPDATE CASCADE,
 			PRIMARY KEY (benefitID , planID)
 		);
 
