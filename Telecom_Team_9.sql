@@ -29,7 +29,7 @@ AS
 		CREATE TABLE Customer_Account (
 			mobileNo MOBILE,
 			pass ALPHA,
-			balance decimal(10,1),
+			balance DECIMAL(10,1),
 			account_type ALPHA,
 			start_date DATE,
 			status ALPHA,
@@ -56,7 +56,7 @@ AS
 		);
 
 		CREATE TABLE Subscribtion(
-			mobileNo char(11),
+			mobileNo MOBILE,
 			planID INT,
 			subscribtion_date DATE,
 			status ALPHA,
@@ -211,7 +211,7 @@ AS
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
-			PRIMARY KEY (benefitID , planID)
+			PRIMARY KEY (benefitID, planID)
 		);
 
 		CREATE TABLE Shop(
@@ -573,7 +573,7 @@ GO;
 
 -- 2.4 g
 CREATE PROCEDURE Account_Highest_Voucher
-@MobileNo char(11),
+@MobileNo MOBILE,
 @Voucher_id INT OUTPUT
 
 AS
@@ -585,14 +585,14 @@ AS
 	END;
 
 	-- Testing
-	DECLARE @MobileNo char(11) = '12345678901', @Voucher_id INT;
+	DECLARE @MobileNo MOBILE = '12345678901', @Voucher_id INT;
 	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
 	PRINT 'The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
 
 GO;
 
 -- 2.4 h
-CREATE FUNCTION Remaining_plan_amount (@MobileNo char(11), @plan_name varchar(50))
+CREATE FUNCTION Remaining_plan_amount (@MobileNo MOBILE, @plan_name ALPHA)
 RETURNS  DECIMAL (10,1)
 AS
 	BEGIN
@@ -617,7 +617,7 @@ AS
 GO;
 
 -- 2.4 i
-CREATE FUNCTION Extra_plan_amount(@MobileNo char(11), @plan_name varchar(50))
+CREATE FUNCTION Extra_plan_amount(@MobileNo MOBILE, @plan_name ALPHA)
 RETURNS DECIMAL(10,1)
 AS
 	BEGIN
@@ -650,7 +650,7 @@ GO;
 
 -- 2.4 m
 CREATE PROCEDURE Payment_wallet_cashback
-@MobileNo char(11),
+@MobileNo MOBILE,
 @payment_id INT,
 @benefit_id INT
 
