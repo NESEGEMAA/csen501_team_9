@@ -111,6 +111,7 @@ AS
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
+			PRIMARY KEY(paymentID)
 
 		);
 		CREATE TABLE Wallet (
@@ -138,7 +139,7 @@ AS
 			FOREIGN KEY (walletID2) REFERENCES Wallet(walletID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
-			PRIMARY KEY (walletID1 , walletID2 , transfer_id)
+			PRIMARY KEY (walletID1, walletID2, transfer_id)
 		);
 
 		CREATE TABLE Benefits(
@@ -164,7 +165,7 @@ AS
 			FOREIGN KEY (PaymentID) REFERENCES Payment(paymentID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
-			PRIMARY KEY(pointsID , benefitID)
+			PRIMARY KEY(pointsID, benefitID)
 		);
 
 		CREATE TABLE Exclusive_Offer(		
@@ -176,7 +177,7 @@ AS
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
-			PRIMARY KEY(offerID , benefitID)
+			PRIMARY KEY(offerID, benefitID)
 		);
 
 		CREATE TABLE Cashback (
@@ -191,7 +192,7 @@ AS
 			FOREIGN KEY (walletID) REFERENCES Wallet(walletID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
-			PRIMARY KEY (CashbackID , benefitID , walletID)
+			PRIMARY KEY (CashbackID, benefitID)
 		);
 
 		CREATE TABLE Plan_Provides_Benefits (
