@@ -5,10 +5,10 @@ GO;
 
 -- Custome datatypes from guidelines
 CREATE TYPE ALPHA  
-FROM varchar(50);
+FROM VARCHAR(50);
 
 CREATE TYPE MOBILE
-FROM char(11);
+FROM CHAR(11);
 
 GO;
 
@@ -92,7 +92,7 @@ AS
 		CREATE TABLE Payment(
 			paymentID INT IDENTITY(1,1), 
 			amount decimal(10,1),
-			date_of_payment date,
+			date_of_payment DATE,
 			payment_method ALPHA,
 			status ALPHA,
 			mobileNo MOBILE,
@@ -108,8 +108,8 @@ AS
 		CREATE TABLE Process_Payment(
 			paymentID INT,
 			planID INT,
-			remaining_balance decimal(10,1),
-			extra_amount decimal(10,1),
+			remaining_balance DECIMAL(10,1),
+			extra_amount DECIMAL(10,1),
 			FOREIGN KEY (paymentID) REFERENCES Payment(paymentID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
@@ -121,11 +121,11 @@ AS
 		);
 		CREATE TABLE Wallet (
 			walletID INT IDENTITY(1,1),
-			current_balance decimal(10,2),
+			current_balance DECIMAL(10,2),
 			currency ALPHA,
 			last_modified_date DATE,
 			nationalID INT,
-			mobileNo  MOBILE ,
+			mobileNo MOBILE,
 			FOREIGN KEY (nationalID) REFERENCES Customer_Profile(nationalID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
@@ -136,7 +136,7 @@ AS
 			walletID1 INT,
 			walletID2 INT,
 			transfer_id INT IDENTITY(1,1),
-			amount decimal(10,2),
+			amount DECIMAL(10,2),
 			transfer_date DATE,
 			FOREIGN KEY (walletID1) REFERENCES Wallet(walletID)
 				ON DELETE CASCADE
@@ -216,8 +216,8 @@ AS
 
 		CREATE TABLE Shop(
 			shopID INT IDENTITY(1,1),
-			name ALPHA ,
-			category ALPHA ,
+			name ALPHA,
+			category ALPHA,
 			PRIMARY KEY (shopID)
 		);
 
@@ -278,7 +278,6 @@ GO;
 -- 2.1 c
 Create Procedure dropAllTables
 AS
-
 	BEGIN
 		DROP TABLE Customer_Profile;
 
@@ -437,7 +436,7 @@ GO;
 -- 2.2 d
 
 -- 2.2 e
-CREATE VIEW AllShops AS
+CREATE VIEW allShops AS
 	SELECT *
 	FROM Shop S LEFT JOIN Physical_Shop PS ON S.shopID = PS.shopID LEFT JOIN E_shop ON S.shopID = ES.shopID;
 
@@ -480,7 +479,7 @@ GO;
 -- 2.3 d
 
 -- 2.3 e
-CREATE FUNCTION Account_SMS_Offers (@MobileNo char(11))
+CREATE FUNCTION Account_SMS_Offers (@MobileNo MOBILE)
 RETURNS TABLE
 AS
 	RETURN
@@ -496,9 +495,9 @@ GO;
 
 -- 2.3 f
 CREATE PROCEDURE Account_Payment_Points
-@MobileNo char(11),
-@TotalTransactions int OUTPUT,
-@TotalPoints decimal(10,2) OUTPUT
+@MobileNo MOBILE,
+@TotalTransactions INT OUTPUT,
+@TotalPoints DECIMAL(10,2) OUTPUT
 
 AS
 	BEGIN
@@ -509,7 +508,7 @@ AS
 	END
 
 	-- Testing
-	DECLARE @MobileNo char(11) = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
+	DECLARE @MobileNo MOBILE = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
 	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
 	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
 	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
@@ -588,7 +587,7 @@ AS
 	-- Testing
 	DECLARE @MobileNo char(11) = '12345678901', @Voucher_id INT;
 	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
-	PRINT ' The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
+	PRINT 'The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
 
 GO;
 
