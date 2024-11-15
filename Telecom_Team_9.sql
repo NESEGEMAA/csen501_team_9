@@ -10,8 +10,6 @@ FROM varchar(50);
 CREATE TYPE MOBILE
 FROM char(11);
 
--- C
-
 GO;
 
 -- 2.1 b
