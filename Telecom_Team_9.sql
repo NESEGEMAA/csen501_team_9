@@ -13,8 +13,9 @@ FROM varchar(50);
 CREATE TYPE MOBILE  
 FROM char(11);
 
--- 2.1 b
 GO;
+
+-- 2.1 b
 CREATE PROCEDURE createAllTables
 AS
 	BEGIN
@@ -97,7 +98,7 @@ AS
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
 			PRIMARY KEY (paymentID)
-		)
+		);
 		
 		CREATE TABLE Process_Payment(
 			paymentID INT,
@@ -139,6 +140,7 @@ AS
 				ON UPDATE CASCADE,
 			PRIMARY KEY (walletID1 , walletID2 , transfer_id)
 		);
+
 		CREATE TABLE Benefits(
 			benefitID INT IDENTITY(1,1),
 			description ALPHA,
@@ -219,7 +221,8 @@ AS
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
 			PRIMARY KEY (shopID),
-		)
+		);
+
 		CREATE TABLE E_Shop (
 			shopID INT,
 			URL ALPHA,
@@ -245,7 +248,7 @@ AS
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
 			PRIMARY KEY (voucherID)
-		)
+		);
 
 		CREATE TABLE Technical_Support_Ticket(
 			ticketID INT IDENTITY(1,1),
@@ -257,18 +260,16 @@ AS
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
 			PRIMARY KEY (ticketID)
-		)
+		);
 	END
 
-
+GO;
 
 -- 2.1 c
-GO;
 Create Procedure dropAllTables
 AS
 
 	BEGIN
-
 		DROP TABLE Customer_Profile;
 
 		DROP TABLE Customer_Account;
@@ -306,77 +307,65 @@ AS
 		DROP TABLE Voucher;
 
 		DROP TABLE Technical_Support_Ticket;
-
 	END
 
-
+GO;
 
 -- 2.1 d
-GO;
 Create Procedure dropAllProceduresFunctionsViews
-
 AS
-
 	BEGIN
-			DROP PROCEDURE
-				createAllTables,
-				dropAllTables,
-				clearAllTables,
-				Account_Plan,
-				Benefits_Account,
-				Total_Points_Account,
-				Unsubscribed_Plans,
-				Ticket_Account_Customer,
-				Account_Highest_Voucher,
-				Top_Successful_Payments,
-				Initiate_plan_payment,
-				Payment_wallet_cashback,
-				Initiate_balance_payment,
-				Redeem_voucher_points;
+		DROP PROCEDURE
+			createAllTables,
+			dropAllTables,
+			clearAllTables,
+			Account_Plan,
+			Benefits_Account,
+			Total_Points_Account,
+			Unsubscribed_Plans,
+			Ticket_Account_Customer,
+			Account_Highest_Voucher,
+			Top_Successful_Payments,
+			Initiate_plan_payment,
+			Payment_wallet_cashback,
+			Initiate_balance_payment,
+			Redeem_voucher_points;
 
+		DROP FUNCTION
+			Account_Plan_date,
+			Account_Usage_Plan,
+			Account_SMS_Offers,
+			Account_Payment_Points,
+			Wallet_Cashback_Amount,
+			Wallet_Transfer_Amount,
+			Wallet_MobileNo,
+			AccountLoginValidation,
+			Consumption,
+			Usage_Plan_CurrentMonth,
+			Cashback_Wallet_Customer,
+			Remaining_plan_amount,
+			Extra_plan_amount,
+			Subscribed_plans_5_Months;
 
-
-
-			DROP FUNCTION
-				Account_Plan_date,
-				Account_Usage_Plan,
-				Account_SMS_Offers,
-				Account_Payment_Points,
-				Wallet_Cashback_Amount,
-				Wallet_Transfer_Amount,
-				Wallet_MobileNo,
-				AccountLoginValidation,
-				Consumption,
-				Usage_Plan_CurrentMonth,
-				Cashback_Wallet_Customer,
-				Remaining_plan_amount,
-				Extra_plan_amount,
-				Subscribed_plans_5_Months;
-
-
-
-			DROP VIEW
-				allCustomerAccounts,
-				allServicePlans,
-				allBenefits,
-				AccountPayments,
-				allShops,
-				allResolvedTickets,
-				CustomerWallet,
-				E_shopVouchers,
-				PhysicalStoreVouchers,
-				Num_of_cashback;
+		DROP VIEW
+			allCustomerAccounts,
+			allServicePlans,
+			allBenefits,
+			AccountPayments,
+			allShops,
+			allResolvedTickets,
+			CustomerWallet,
+			E_shopVouchers,
+			PhysicalStoreVouchers,
+			Num_of_cashback;
 	END
 
-
+GO;
 
 -- 2.1 e
-GO;
 Create Procedure clearAllTables
 AS
-
 	BEGIN
-
 		DELETE FROM Customer_Profile;
 
 		DELETE FROM Customer_Account;
@@ -414,69 +403,63 @@ AS
 		DELETE FROM	Voucher;
 
 		DELETE FROM Technical_Support_Ticket;
-
 	END
 
-
+GO;
 
 -- 2.2 a
-GO;
 Create View allCustomerAccounts AS
 	SELECT *
 	FROM Customer_profile p INNER JOIN Customer_Account a 
 	ON p.nationalID = a.nationalID;
 
-
+GO;
 
 -- 2.2 b
-GO;
 Create View allServicePlans AS
 	SELECT *
-	FROM Service_Plan
+	FROM Service_Plan;
+
+GO;
 
 -- 2.2 c
 
 -- 2.2 d
 
-
 -- 2.2 e
-GO;
 CREATE VIEW AllShops AS
-SELECT *
-FROM Shop S LEFT JOIN Physical_Shop PS ON S.shopID = PS.shopID LEFT JOIN E_shop ON S.shopID = ES.shopID;
+	SELECT *
+	FROM Shop S LEFT JOIN Physical_Shop PS ON S.shopID = PS.shopID LEFT JOIN E_shop ON S.shopID = ES.shopID;
 
-
+GO;
 
 -- 2.2 f
-GO;
 CREATE VIEW allResolvedTickets AS
-SELECT *
-FROM Technical_Support_Ticket
-WHERE status = 'resolved';
+	SELECT *
+	FROM Technical_Support_Ticket
+	WHERE status = 'resolved';
 
-
+GO;
 
 -- 2.2 g
 
 -- 2.2 h
 
-
 -- 2.2 i
-GO;
 CREATE VIEW PhysicalStoreVouchers AS
 	SELECT ps.shopID, ps.name, v.voucherID, v.value
 	FROM Physical_Shop INNER JOIN Voucher v
-	ON (ps.shopID = v.shopID)
+	ON (ps.shopID = v.shopID);
 
+GO;
 
 -- 2.2 j
-GO;
 CREATE VIEW Num_of_cashback AS
 	SELECT c.walletID, COUNT(c.CashbackID)
 	FROM Cashback c
-	GROUP BY c.walletID
+	GROUP BY c.walletID;
 
-
+GO;
 
 -- 2.3 a
 
@@ -487,21 +470,20 @@ CREATE VIEW Num_of_cashback AS
 -- 2.3 d
 
 -- 2.3 e
-GO;
 CREATE FUNCTION Account_SMS_Offers (@MobileNo char(11))
 RETURNS TABLE
 AS
-RETURN
-(
-	SELECT eo.offerID, b.description, eo.SMS_offered, eo.internet_offered, eo.minutes_offered, b.validity_date 
-	FROM Exclusive_Offer eo
-	INNER JOIN Benefits b ON eo.benefitID = b.benefitID
-	WHERE b.mobileNo = @MobileNo AND eo.SMS_offered > 0
+	RETURN
+	(
+		SELECT eo.offerID, b.description, eo.SMS_offered, eo.internet_offered, eo.minutes_offered, b.validity_date 
+		FROM Exclusive_Offer eo
+		INNER JOIN Benefits b ON eo.benefitID = b.benefitID
+		WHERE b.mobileNo = @MobileNo AND eo.SMS_offered > 0
+	);
 
-)
+GO;
 
 -- 2.3 f
-GO;
 CREATE PROCEDURE Account_Payment_Points
 @MobileNo char(11),
 @TotalTransactions int OUTPUT,
@@ -516,20 +498,19 @@ AS
 
 		
 	END;
+	-- Testing
 	DECLARE @MobileNo char(11) = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
 	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
 	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
 	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
 
-
+GO;
 
 -- 2.3 g
 
 -- 2.3 h
 
-
 -- 2.3 i
-GO;
 CREATE FUNCTION Wallet_MobileNo (@MobileNo MOBILE)
 RETURNS BIT
 AS
@@ -547,10 +528,9 @@ AS
 		RETURN @result;
 	END
 
-
+GO;
 
 -- 2.3 j
-GO;
 CREATE PROCEDURE Total_Points_Account
 @MobileNo MOBILE,
 @newPoints INT OUTPUT
@@ -564,10 +544,11 @@ AS
 
 		UPDATE Customer_Account
 		SET point = @newPoints
-		WHERE mobileNo = @MobileNo
+		WHERE mobileNo = @MobileNo;
 	END
 
 GO;
+
 -- 2.4 a
 
 -- 2.4 b
@@ -580,9 +561,7 @@ GO;
 
 -- 2.4 f
 
-
 -- 2.4 g
-GO;
 CREATE PROCEDURE Account_Highest_Voucher
 @MobileNo char(11),
 @Voucher_id INT OUTPUT
@@ -595,62 +574,64 @@ AS
 		ORDER BY V.value DESC
 	END;
 
+	-- Testing
 	DECLARE @MobileNo char(11) = '12345678901', @Voucher_id INT;
 	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
 	PRINT ' The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
 
-
+GO;
 
 -- 2.4 h
-GO;
 CREATE FUNCTION Remaining_plan_amount (@MobileNo char(11), @plan_name varchar(50))
 RETURNS  DECIMAL (10,1)
 AS
-BEGIN
-	DECLARE @price INT;
-	DECLARE @payment_amount DECIMAL(10,1);
-	DECLARE @Remaining_amount DECIMAL(10,1);
+	BEGIN
+		DECLARE @price INT;
+		DECLARE @payment_amount DECIMAL(10,1);
+		DECLARE @Remaining_amount DECIMAL(10,1);
 
-	SELECT @price = ISNULL(sp.price,0), @payment_amount = SUM(ISNULL(p.amount,0))
-	FROM Payment p
-	LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
-	LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
-	WHERE p.mobileNo = @MobileNo AND sp.plan_name = @plan_name;
+		SELECT @price = ISNULL(sp.price,0), @payment_amount = SUM(ISNULL(p.amount,0))
+		FROM Payment p
+		LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
+		LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
+		WHERE p.mobileNo = @MobileNo AND sp.plan_name = @plan_name;
 
-	IF @payment_amount < @price
-		SET @Remaining_amount = @price - @payment_amount;
-	ELSE
-		SET @Remaining_amount = 0;
+		IF @payment_amount < @price
+			SET @Remaining_amount = @price - @payment_amount;
+		ELSE
+			SET @Remaining_amount = 0;
 
-	RETURN @Remaining_amount;
+		RETURN @Remaining_amount;
+	END
 
-	END;
+GO;
 
 -- 2.4 i
-GO;
 CREATE FUNCTION Extra_plan_amount(@MobileNo char(11), @plan_name varchar(50))
 RETURNS DECIMAL(10,1)
 AS
-BEGIN
-	DECLARE @price INT;
-	DECLARE @payment_amount DECIMAL(10,1);
-	DECLARE @Extra_amount DECIMAL(10,1);
+	BEGIN
+		DECLARE @price INT;
+		DECLARE @payment_amount DECIMAL(10,1);
+		DECLARE @Extra_amount DECIMAL(10,1);
 
-	SELECT @price = ISNULL(sp.price,0), @payment_amount = SUM(ISNULL(p.amount,0))
-	FROM Payment p
-	LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
-	LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
-	WHERE p.mobileNo = @MobileNo AND sp.plan_name = @plan_name;
+		SELECT @price = ISNULL(sp.price,0), @payment_amount = SUM(ISNULL(p.amount,0))
+		FROM Payment p
+		LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
+		LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
+		WHERE p.mobileNo = @MobileNo AND sp.plan_name = @plan_name;
 
-	IF @payment_amount > @price
-		SET @Extra_amount = @payment_amount - @price;
-	ELSE
-		SET @Extra_amount = 0;
+		IF @payment_amount > @price
+			SET @Extra_amount = @payment_amount - @price;
+		ELSE
+			SET @Extra_amount = 0;
 		
 
-	RETURN @Extra_amount;
+		RETURN @Extra_amount;
+	END
 
-END;
+GO;
+
 -- 2.4 j
 
 -- 2.4 k
@@ -658,7 +639,6 @@ END;
 -- 2.4 l
 
 -- 2.4 m
-GO;
 CREATE PROCEDURE Payment_wallet_cashback
 @MobileNo char(11),
 @payment_id INT,
@@ -698,6 +678,7 @@ AS
 		SET balance = balance + @amount
 		WHERE mobileNo = @MobileNo;
 	END
+
 GO;
 
 -- 2.4 o
