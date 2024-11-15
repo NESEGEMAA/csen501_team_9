@@ -7,11 +7,10 @@ GO;
 CREATE TYPE ALPHA  
 FROM varchar(50);
 
-CREATE TYPE STATUS  
-FROM varchar(50);
-
-CREATE TYPE MOBILE  
+CREATE TYPE MOBILE
 FROM char(11);
+
+-- C
 
 GO;
 
@@ -30,7 +29,7 @@ AS
 		);
 
 		CREATE TABLE Customer_Account (
-			mobileNo VARCHAR(11),
+			mobileNo MOBILE,
 			pass ALPHA,
 			balance decimal(10,1),
 			account_type ALPHA,
@@ -40,8 +39,11 @@ AS
 			nationalID INT,
 			PRIMARY KEY (mobileNo) ,
 			FOREIGN KEY (nationalID) REFERENCES Customer_Profile(nationalID)
-			ON DELETE CASCADE
-			ON UPDATE CASCADE
+				ON DELETE CASCADE
+				ON UPDATE CASCADE,
+			
+			CONSTRAINT Account_Type CHECK (account_type IN ('Post Paid', 'Prepaid', 'Pay_as_you_go')),
+			CONSTRAINT Status_Type CHECK (status IN ('active', 'onhold'))
 		);
 
 		CREATE TABLE Service_Plan(
@@ -66,7 +68,9 @@ AS
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
-			PRIMARY KEY (mobileNo,planID)
+			PRIMARY KEY (mobileNo,planID),
+
+			CONSTRAINT Status_Type CHECK (status IN ('active', 'onhold'))
 		);
 
 		CREATE TABLE Plan_Usage(
@@ -92,12 +96,15 @@ AS
 			amount decimal(10,1),
 			date_of_payment date,
 			payment_method ALPHA,
-			status STATUS,
+			status ALPHA,
 			mobileNo MOBILE,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
-			PRIMARY KEY (paymentID)
+			PRIMARY KEY (paymentID),
+
+			CONSTRAINT Status_type CHECK (status IN ('successful', 'pending', 'rejected')),
+			CONSTRAINT Payment_Type CHECK (payment_method IN ('cash', 'credit'))
 		);
 		
 		CREATE TABLE Process_Payment(
@@ -146,12 +153,14 @@ AS
 			benefitID INT IDENTITY(1,1),
 			description ALPHA,
 			vaidity_date DATE,
-			status STATUS,
+			status ALPHA,
 			mobileNo MOBILE,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
-			PRIMARY KEY (benefitID)
+			PRIMARY KEY (benefitID),
+
+			CONSTRAINT Status_Type CHECK (status IN ('active', 'expired'))
 		);
 
 		CREATE TABLE Points_Group (
@@ -256,11 +265,13 @@ AS
 			mobileNo MOBILE,
 			issue_description ALPHA,
 			priority_level INT,
-			status STATUS,
+			status ALPHA,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
-			PRIMARY KEY (ticketID)
+			PRIMARY KEY (ticketID),
+
+			CONSTRAINT Status_Type CHECK (status IN ('Open', 'In Progress', 'Resolved'))
 		);
 	END
 
@@ -476,6 +487,7 @@ RETURNS TABLE
 AS
 	RETURN
 	(
+		-- # There is no type 'SMS'
 		SELECT eo.offerID, b.description, eo.SMS_offered, eo.internet_offered, eo.minutes_offered, b.validity_date 
 		FROM Exclusive_Offer eo
 		INNER JOIN Benefits b ON eo.benefitID = b.benefitID
@@ -496,9 +508,8 @@ AS
 		FROM Payment P
 		LEFT JOIN Points_Group PG ON P.PaymentID = PG.PaymentID
 		WHERE P.mobileNo = @MobileNo AND P.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP) AND P.status = 'accepted';
+	END
 
-		
-	END;
 	-- Testing
 	DECLARE @MobileNo char(11) = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
 	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
@@ -532,6 +543,7 @@ AS
 GO;
 
 -- 2.3 j
+-- # what does updating the total points mean
 CREATE PROCEDURE Total_Points_Account
 @MobileNo MOBILE,
 @newPoints INT OUTPUT
@@ -689,41 +701,52 @@ CREATE PROCEDURE Redeem_voucher_points
 
 AS
 	BEGIN
+		DECLARE @has_voucher BIT
 		DECLARE @current_points INT
 		DECLARE @points INT
 		DECLARE @expiry_date DATE
 
-		-- Check expiry date of the voucher
-		SELECT @expiry_date = expiry_date
-		FROM Voucher
-		WHERE voucherID = @voucher_id
-
-		-- If voucher not expired, then continue
-		IF @expiry_date > CAST(CURRENT_TIMESTAMP AS DATE)
+		-- Checking whether the user has the voucher in question
+		IF EXISTS (
+			SELECT voucherID, mobileNo
+			FROM Voucher
+			WHERE voucherID = @voucher_id AND mobileNo = @MobileNo
+		)
 		BEGIN
-			-- Getting the user's current points
-			SELECT @current_points = point
-			FROM Customer_Account
-			WHERE mobileNo = @MobileNO;
-
-			-- Getting the amount of points needed to redeem the voucher in question
-			SELECT @points = points
+			-- Check expiry date of the voucher
+			SELECT @expiry_date = expiry_date
 			FROM Voucher
 			WHERE voucherID = @voucher_id
-			
-			-- Checking whether the points the user has are enough to redeem the voucher, if so continue
-			IF @current_points >= @points
+
+			-- If voucher not expired, then continue
+			IF @expiry_date > CAST(CURRENT_TIMESTAMP AS DATE)
 			BEGIN
-				-- Deducting the points needed to redeem the voucher from the user points
-				UPDATE Customer_Account
-				SET point = @current_points - @points
+				-- Getting the user's current points
+				SELECT @current_points = point
+				FROM Customer_Account
 				WHERE mobileNo = @MobileNO;
 
-				-- Update the redemption date of the voucher in question to the date of the execution of the code
-				UPDATE Voucher
-				SET redeem_date = CAST(CURRENT_TIMESTAMP AS DATE)
+				-- Getting the amount of points needed to redeem the voucher in question
+				SELECT @points = points
+				FROM Voucher
+				WHERE voucherID = @voucher_id
+			
+				-- Checking whether the points the user has are enough to redeem the voucher, if so continue
+				IF @current_points >= @points
+				BEGIN
+					-- Deducting the points needed to redeem the voucher from the user points
+					UPDATE Customer_Account
+					SET point = @current_points - @points
+					WHERE mobileNo = @MobileNO;
+
+					-- Update the redemption date of the voucher in question to the date of the execution of the code
+					UPDATE Voucher
+					SET redeem_date = CAST(CURRENT_TIMESTAMP AS DATE)
+				END
 			END
+			-- # possible printing error message
 		END
+		-- # possible printing error message
 	END
 
 GO;
