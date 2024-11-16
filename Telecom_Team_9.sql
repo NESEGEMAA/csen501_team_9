@@ -504,7 +504,7 @@ AS
 		SELECT @TotalTransactions = COUNT(P.PaymentID) , @TotalPoints = SUM(ISNULL(PG.pointsAmount,0))
 		FROM Payment P
 		LEFT JOIN Points_Group PG ON P.PaymentID = PG.PaymentID
-		WHERE P.mobileNo = @MobileNo AND P.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP) AND P.status = 'accepted';
+		WHERE P.mobileNo = @MobileNo AND P.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP) AND P.status = 'successful';
 	END
 
 	-- Testing
