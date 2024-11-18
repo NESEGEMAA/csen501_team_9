@@ -696,13 +696,18 @@ CREATE PROCEDURE Unsubscribed_Plans
 @MobileNo MOBILE
 AS
 	BEGIN
-	SELECT P.*
-	FROM Service_Plan P
+		(
+			SELECT P.*
+			FROM Service_Plan P
+		)
 		EXCEPT
-	SELECT P.*
-	FROM Service_Plan P, Subscription S
-	WHERE P.PlanID = S.PlanID AND S.mobileNo = @MobileNo
+		(
+			SELECT P.*
+			FROM Service_Plan P, Subscription S
+			WHERE P.PlanID = S.PlanID AND S.mobileNo = @MobileNo
+		)
 	END
+
 GO;
 
 -- 2.4 d
