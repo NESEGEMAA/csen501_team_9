@@ -433,7 +433,8 @@ GO;
 Create View allCustomerAccounts AS
 	SELECT *
 	FROM Customer_profile p INNER JOIN Customer_Account a 
-	ON p.nationalID = a.nationalID;
+	ON p.nationalID = a.nationalID
+	WHERE a.status = 'active';
 
 GO;
 
@@ -450,11 +451,13 @@ SELECT *
 FROM Benefits B WHERE B.status = 'active'
 
 GO;
+
 -- 2.2 d
 Create View AccountPayments AS
 SELECT *
-FROM Payments P INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
+FROM Payment P INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
 GO;
+
 -- 2.2 e
 CREATE VIEW allShops AS
 	SELECT *
