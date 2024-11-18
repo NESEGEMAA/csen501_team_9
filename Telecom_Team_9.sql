@@ -516,13 +516,14 @@ GO;
 
 -- 2.3 b
 CREATE FUNCTION Account_Plan_date (@Subscription_Date date, @Plan_id int)
-RETURNS TABLE
+RETURNS TABLE 
 AS
 	RETURN (
 		SELECT C.*
 		FROM Customer_Account C, Subscription S
 		WHERE C.mobileNo = S.mobileNo AND S.planID = @Plan_id AND S.date = @Subscription_Date
 	)
+
 GO;
 
 -- 2.3 c
