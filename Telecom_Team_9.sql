@@ -530,9 +530,13 @@ GO;
 CREATE FUNCTION Account_Usage_Plan (@MobileNo MOBILE, @from_date date)
 RETURNS TABLE
 AS
-RETURN
-SELECT P.planID ,SUM(P.data_consumption) AS total_data_consumed, SUM(P.minutes_used) total_minutes_used , SUM(P.SMS_sent) total_SMS
-FROM Plan_Usage P WHERE P.mobileNO = @MobileNo GROUP BY P.planID
+	RETURN (
+		-- # start date and end date in the plan_usage table are assumed to be ~a month?
+		SELECT P.planID, SUM(P.data_consumption) total_data_consumed, SUM(P.minutes_used) total_minutes_used, SUM(P.SMS_sent) total_SMS
+		FROM Plan_Usage P
+		WHERE P.mobileNO = @MobileNo AND P.start_date >= @from_date
+		GROUP BY P.planID
+	)
 
 GO;
 
