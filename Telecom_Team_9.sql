@@ -542,13 +542,31 @@ GO;
 
 -- 2.3 d
 CREATE PROCEDURE Benefits_Account
-@MobileNo MOBILE, @planID int
+@MobileNo MOBILE,
+@planID INT
 AS
-BEGIN 
-DELETE B FROM Benefits B INNER JOIN Subscribtion S ON (B.monileNo = S.mobileNo)
-WHERE S.planID = @planID AND B.mobileNo = @MobileNO
-END
-GO
+	BEGIN
+		/*
+			-- Shows the table before deletion
+			SELECT B.*
+			FROM Benefits B
+			WHERE B.mobileNo = @MobileNo
+		*/
+
+		DELETE B FROM Benefits B
+		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
+		WHERE S.planID = @planID AND B.mobileNo = @MobileNo
+
+		/*
+			-- Shows the table after deletion
+			SELECT B.*
+			FROM Benefits B
+			WHERE B.mobileNo = @MobileNo
+		*/
+	END
+	-- # Should there be a select statement outputting the table after deletion?
+GO;
+
 -- 2.3 e
 CREATE FUNCTION Account_SMS_Offers (@MobileNo MOBILE)
 RETURNS TABLE
