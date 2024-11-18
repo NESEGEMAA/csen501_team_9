@@ -447,8 +447,9 @@ GO;
 
 -- 2.2 c
 Create View allBenefits AS
-SELECT * 
-FROM Benefits B WHERE B.status = 'active'
+	SELECT * 
+	FROM Benefits B
+	WHERE B.status = 'active'
 
 GO;
 
