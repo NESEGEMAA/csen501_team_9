@@ -455,8 +455,8 @@ GO;
 
 -- 2.2 d
 Create View AccountPayments AS
-SELECT *
-FROM Payment P INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
+	SELECT P.*
+	FROM Payment P INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
 GO;
 
 -- 2.2 e
