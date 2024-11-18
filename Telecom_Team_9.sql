@@ -727,11 +727,15 @@ GO;
 CREATE FUNCTION Cashback_Wallet_Customer (@NationalID int)
 RETURNS TABLE
 AS
-RETURN
-SELECT C.amount , C.credit_date
-FROM Cashback C INNER JOIN Wallet W ON (W.walletID = C.walletID)
-WHERE W.nationalID = @NationalID 
+	RETURN	(
+				-- # Should there be a restriction on what the user can view, since the extra data is redundant for a customer?
+				SELECT C.*
+				FROM Cashback C INNER JOIN Wallet W ON (W.walletID = C.walletID)
+				WHERE W.nationalID = @NationalID
+			)
+
 GO;
+
 -- 2.4 f
 CREATE PROCEDURE Ticket_Account_Customer
 @NationalID int
