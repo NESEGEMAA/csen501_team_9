@@ -840,6 +840,7 @@ AS
 		DECLARE @walletID INT
 		DECLARE @cashback INT
 
+		-- # Should we not output the tables?
 		SELECT @paymentAmount = amount, @walletID = walletID
 		FROM Payment INNER JOIN Wallet
 		ON (Payment.mobileNo = Wallet.mobileNo)
