@@ -508,9 +508,9 @@ GO;
 CREATE PROCEDURE Account_Plan
 AS
 	BEGIN
-	SELECT C.*, P.*
-	FROM Customer_Account C, Subscription S, Service_Plan P
-	WHERE C.mobileNo = S.mobileNo AND S.planID = P.planID
+		SELECT C.*, P.*
+		FROM Customer_Account C, Subscription S, Service_Plan P
+		WHERE C.mobileNo = S.mobileNo AND S.planID = P.planID
 	END
 GO;
 
