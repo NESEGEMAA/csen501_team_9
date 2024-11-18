@@ -641,7 +641,8 @@ AS
 		SELECT @newPoints = SUM(pointsAmount)
 		FROM Point_Group pg INNER JOIN Benefit b
 		ON (pg.benefitID = b.benefitID)
-		WHERE mobileNo = @MobileNo;
+		-- Checking for validity of points group, and considering it not used.
+		WHERE b.mobileNo = @MobileNo AND b.validity_date >= CURRENT_TIMESTAMP;
 
 		UPDATE Customer_Account
 		SET point = @newPoints
