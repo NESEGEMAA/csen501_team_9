@@ -168,7 +168,7 @@ AS
 		);
 
 		-- # should it be PointsGroup or Points_Group
-		CREATE TABLE PointsGroup (
+		CREATE TABLE Points_Group (
 			pointID INT IDENTITY(1,1),
 			benefitID INT, 
 			pointsAmount INT,
@@ -183,7 +183,7 @@ AS
 		);
 
 		-- # should it be ExclusiveOffer or Exclusive_Offer
-		CREATE TABLE ExclusiveOffer (		
+		CREATE TABLE Exclusive_Offer (		
 			offerID INT IDENTITY(1,1),
 			benefitID INT,
 			internet_offered INT,
@@ -230,7 +230,7 @@ AS
 		);
 
 		-- # should it be PhysicalShop or Physical_Shop
-		CREATE TABLE PhysicalShop (
+		CREATE TABLE Physical_Shop (
 			shopID INT,
 			address ALPHA,
 			working_hours ALPHA,
@@ -292,7 +292,7 @@ GO;
 Create Procedure dropAllTables
 AS
 	BEGIN
-		DROP TABLE Customer_Profile;
+		DROP TABLE Customer_profile;
 
 		DROP TABLE Customer_Account;
 
@@ -388,7 +388,7 @@ GO;
 Create Procedure clearAllTables
 AS
 	BEGIN
-		DELETE FROM Customer_Profile;
+		DELETE FROM Customer_profile;
 
 		DELETE FROM Customer_Account;
 
