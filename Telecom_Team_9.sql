@@ -488,9 +488,11 @@ GO;
 
 -- 2.2 i
 CREATE VIEW PhysicalStoreVouchers AS
-	SELECT ps.shopID, ps.name, v.voucherID, v.value
-	FROM Physical_Shop INNER JOIN Voucher v
-	ON (ps.shopID = v.shopID);
+	SELECT ps.*, v.voucherID, v.value
+	FROM Physical_Shop ps INNER JOIN Voucher v
+	ON (ps.shopID = v.shopID)
+	-- The voucher is considered redeemed if it has a redemption date, otherwise it is not redeemed yet.
+	WHERE v.redeem_date IS NOT NULL;
 
 GO;
 
