@@ -773,7 +773,7 @@ GO;
 
 -- 2.4 h
 CREATE FUNCTION Remaining_plan_amount (@MobileNo MOBILE, @plan_name ALPHA)
-RETURNS  DECIMAL (10,1)
+RETURNS DECIMAL (10,1)
 AS
 	BEGIN
 		DECLARE @price INT;
