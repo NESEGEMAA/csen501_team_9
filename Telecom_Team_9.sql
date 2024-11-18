@@ -574,7 +574,7 @@ AS
 	RETURN
 	(
 		-- # There is no type 'SMS'
-		SELECT eo.offerID, b.description, eo.SMS_offered, eo.internet_offered, eo.minutes_offered, b.validity_date 
+		SELECT eo.*
 		FROM Exclusive_Offer eo
 		INNER JOIN Benefits b ON eo.benefitID = b.benefitID
 		WHERE b.mobileNo = @MobileNo AND eo.SMS_offered > 0
