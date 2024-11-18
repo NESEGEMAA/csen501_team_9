@@ -432,9 +432,16 @@ Create View allServicePlans AS
 GO;
 
 -- 2.2 c
+Create View allBenefits AS
+SELECT * 
+FROM Benefits B WHERE B.status = 'active'
 
+GO;
 -- 2.2 d
-
+Create View AccountPayments AS
+SELECT *
+FROM Payments P INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
+GO;
 -- 2.2 e
 CREATE VIEW allShops AS
 	SELECT *
@@ -475,9 +482,24 @@ GO;
 -- 2.3 b
 
 -- 2.3 c
+CREATE FUNCTION Account_Usage_Plan (@MobileNo MOBILE, @from_date date)
+RETURNS TABLE
+AS
+RETURN
+SELECT P.planID ,SUM(P.data_consumption) AS total_data_consumed, SUM(P.minutes_used) total_minutes_used , SUM(P.SMS_sent) total_SMS
+FROM Plan_Usage P WHERE P.mobileNO = @MobileNo GROUP BY P.planID
+
+GO;
 
 -- 2.3 d
-
+CREATE PROCEDURE Benefits_Account
+@MobileNo MOBILE, @planID int
+AS
+BEGIN 
+DELETE B FROM Benefits B INNER JOIN Subscribtion S ON (B.monileNo = S.mobileNo)
+WHERE S.planID = @planID AND B.mobileNo = @MobileNO
+END
+GO
 -- 2.3 e
 CREATE FUNCTION Account_SMS_Offers (@MobileNo MOBILE)
 RETURNS TABLE
@@ -566,11 +588,33 @@ GO;
 -- 2.4 c
 
 -- 2.4 d
-
+CREATE FUNCTION Usage_Plan_CurrentMonth(@MobileNo MOBILE)
+RETURNS TABLE
+AS
+RETURN
+SELECT P.data_consumption , P.minutes_used , P.SMS_sent
+FROM Plan_Usage P INNER JOIN Subscribtion S ON (P.planID = S.planID)
+WHERE @MobileNo = S.mobileNo AND S.status = 'active'
+GO;
 -- 2.4 e
-
+CREATE FUNCTION Cashback_Wallet_Customer (@NationalID int)
+RETURNS TABLE
+AS
+RETURN
+SELECT C.amount , C.credit_date
+FROM Cashback C INNER JOIN Wallet W ON (W.walletID = C.walletID)
+WHERE W.nationalID = @NationalID 
+GO;
 -- 2.4 f
-
+CREATE PROCEDURE Ticket_Account_Customer
+@NationalID int
+AS
+BEGIN
+SELECT COUNT (*) 
+FROM Technical_Support_Ticket T INNER JOIN Customer_Account C ON  (T.mobileNo = C.mobileNo)
+WHERE T.status = 'In Progress' AND C.nationalID = @NationalID
+END
+GO
 -- 2.4 g
 CREATE PROCEDURE Account_Highest_Voucher
 @MobileNo MOBILE,
