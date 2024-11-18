@@ -714,11 +714,15 @@ GO;
 CREATE FUNCTION Usage_Plan_CurrentMonth(@MobileNo MOBILE)
 RETURNS TABLE
 AS
-RETURN
-SELECT P.data_consumption , P.minutes_used , P.SMS_sent
-FROM Plan_Usage P INNER JOIN Subscribtion S ON (P.planID = S.planID)
-WHERE @MobileNo = S.mobileNo AND S.status = 'active'
+	RETURN	(
+				SELECT P.*
+				FROM Plan_Usage P INNER JOIN Subscribtion S ON (P.planID = S.planID)
+				-- plan usage records the usasge of a plan periodically not overall, with ~one-month period.
+				WHERE S.mobileNo = @MobileNo AND S.status = 'active' AND MONTH(CURRENT_TIMESTAMP) = MONTH(P.start_date)
+			)
+
 GO;
+
 -- 2.4 e
 CREATE FUNCTION Cashback_Wallet_Customer (@NationalID int)
 RETURNS TABLE
