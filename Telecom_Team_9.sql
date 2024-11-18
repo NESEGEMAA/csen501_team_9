@@ -461,8 +461,16 @@ GO;
 
 -- 2.2 e
 CREATE VIEW allShops AS
-	SELECT *
-	FROM Shop S LEFT JOIN Physical_Shop PS ON S.shopID = PS.shopID LEFT JOIN E_shop ON S.shopID = ES.shopID;
+	-- # Details include the extra info about the shop from their types
+	(
+		SELECT *
+		FROM Shop S INNER JOIN Physical_Shop PS ON S.shopID = PS.shopID
+	)
+	UNION
+	(
+		SELECT *
+		FROM Shop S INNER JOIN E_shop ES ON S.shopID = ES.shopID
+	)
 
 GO;
 
