@@ -740,12 +740,16 @@ GO;
 CREATE PROCEDURE Ticket_Account_Customer
 @NationalID int
 AS
-BEGIN
-SELECT COUNT (*) 
-FROM Technical_Support_Ticket T INNER JOIN Customer_Account C ON  (T.mobileNo = C.mobileNo)
-WHERE T.status = 'In Progress' AND C.nationalID = @NationalID
-END
-GO
+	BEGIN
+		-- # Number of technical support tickets as a column (current implementation) or as an INT?
+		SELECT COUNT (*) 
+		FROM Technical_Support_Ticket T INNER JOIN Customer_Account C ON (T.mobileNo = C.mobileNo)
+		WHERE T.status <> 'Resolved' AND C.nationalID = @NationalID
+		GROUP BY C.mobileNo
+	END
+
+GO;
+
 -- 2.4 g
 CREATE PROCEDURE Account_Highest_Voucher
 @MobileNo MOBILE,
