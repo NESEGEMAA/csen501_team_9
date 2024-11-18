@@ -738,11 +738,12 @@ GO;
 
 -- 2.4 f
 CREATE PROCEDURE Ticket_Account_Customer
-@NationalID int
+@NationalID INT,
+@unresolved INT OUTPUT
 AS
 	BEGIN
-		-- # Number of technical support tickets as a column (current implementation) or as an INT?
-		SELECT COUNT (*) 
+		-- # Number of technical support tickets as a column or as an INT (current implementation)?
+		SELECT @unresolved = COUNT (*) 
 		FROM Technical_Support_Ticket T INNER JOIN Customer_Account C ON (T.mobileNo = C.mobileNo)
 		WHERE T.status <> 'Resolved' AND C.nationalID = @NationalID
 		GROUP BY C.mobileNo
