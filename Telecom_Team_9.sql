@@ -624,6 +624,7 @@ AS
 		ELSE
 			SET @result = 0;
 
+		-- # Assumption: 0 is false, 1 is true 
 		RETURN @result;
 	END
 
