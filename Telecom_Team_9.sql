@@ -478,8 +478,25 @@ CREATE VIEW Num_of_cashback AS
 GO;
 
 -- 2.3 a
+CREATE PROCEDURE Account_Plan
+AS
+	BEGIN
+	SELECT C.*, P.*
+	FROM Customer_Account C, Subscription S, Service_Plan P
+	WHERE C.mobileNo = S.mobileNo AND S.planID = P.planID
+	END
+GO;
 
 -- 2.3 b
+CREATE FUNCTION Account_Plan_date (@Subscription_Date date, @Plan_id int)
+RETURNS TABLE
+AS
+	RETURN (
+		SELECT C.*
+		FROM Customer_Account C, Subscription S
+		WHERE C.mobileNo = S.mobileNo AND S.planID = @Plan_id AND S.date = @Subscription_Date
+	)
+GO;
 
 -- 2.3 c
 CREATE FUNCTION Account_Usage_Plan (@MobileNo MOBILE, @from_date date)
@@ -582,10 +599,47 @@ AS
 GO;
 
 -- 2.4 a
+CREATE FUNCTION AccountLoginValidation (@MobileNo MOBILE, @password ALPHA)
+RETURNS BIT
+AS
+	BEGIN
+	DECLARE @OUT_BIT BIT
+	IF EXISTS(
+			SELECT *
+			FROM Customer_Account
+			WHERE pass = @password AND mobileNo = @MobileNo
+		)
+		SET @OUT_BIT = 1;
+	ELSE
+		SET @OUT_BIT = 0;
+	RETURN @OUT_BIT
+	END
+GO;
 
 -- 2.4 b
+CREATE FUNCTION Consumption (@Plan_name ALPHA, @start_date date, @end_date date)
+RETURNS TABLE
+AS
+	RETURN(
+		SELECT U.data_consumption, U.minutes_used, U.SMS_sent
+		FROM Plan_Usage U, Service_Plan P
+		WHERE P.name = @Plan_name AND P.planID = U.planID AND U.start_date = @start_date AND U.end_date = @end_date
+	)
+GO;
 
 -- 2.4 c
+CREATE PROCEDURE Unsubscribed_Plans
+@MobileNo MOBILE
+AS
+	BEGIN
+	SELECT P.*
+	FROM Service_Plan P
+		EXCEPT
+	SELECT P.*
+	FROM Service_Plan P, Subscription S
+	WHERE P.PlanID = S.PlanID AND S.mobileNo = @MobileNo
+	END
+GO;
 
 -- 2.4 d
 CREATE FUNCTION Usage_Plan_CurrentMonth(@MobileNo MOBILE)
