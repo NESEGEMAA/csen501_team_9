@@ -280,43 +280,44 @@ Create Procedure dropAllTables
 AS
 	-- Update this to drop from sub to parent
 	BEGIN
-		DROP TABLE Customer_profile;
-
-		DROP TABLE Customer_Account;
-
-		DROP TABLE Service_Plan;
-
-		DROP TABLE Subscription;
-
-		DROP TABLE Plan_Usage;
-
-		DROP TABLE Payment;
-
-		DROP TABLE Process_Payment;
-
-		DROP TABLE Wallet;
-
-		DROP TABLE Transfer_money;
-
-		DROP TABLE Benefits;
-
-		DROP TABLE Points_Group;
-
-		DROP TABLE Exclusive_Offer;
-
-		DROP TABLE Cashback;
-
-		DROP TABLE Plan_Provides_Benefits;
-
-		DROP TABLE Shop;
-
 		DROP TABLE Physical_Shop;
 
 		DROP TABLE E_shop;
 
 		DROP TABLE Voucher;
 
+		DROP TABLE Shop;
+
 		DROP TABLE Technical_Support_Ticket;
+
+		DROP TABLE Plan_Provides_Benefits;
+		
+		DROP TABLE Cashback;
+
+		DROP TABLE Points_Group;
+
+		DROP TABLE Exclusive_Offer;
+
+		DROP TABLE Benefits;
+
+		DROP TABLE Transfer_money;
+
+		DROP TABLE Wallet;
+
+		DROP TABLE Process_Payment;
+
+		DROP TABLE Payment;
+
+		DROP TABLE Plan_Usage;
+
+		DROP TABLE Subscription;
+
+		DROP TABLE Service_Plan;
+
+		DROP TABLE Customer_Account;
+
+		DROP TABLE Customer_profile;
+
 	END
 
 GO;
@@ -376,43 +377,43 @@ GO;
 Create Procedure clearAllTables
 AS
 	BEGIN
-		DELETE FROM Customer_profile;
+		TRUNCATE TABLE Customer_profile;
 
-		DELETE FROM Customer_Account;
+		TRUNCATE TABLE Customer_Account;
 
-		DELETE FROM Service_Plan;
+		TRUNCATE TABLE Service_Plan;
 
-		DELETE FROM Subscription;
+		TRUNCATE TABLE Subscription;
 
-		DELETE FROM Plan_Usage;
+		TRUNCATE TABLE Plan_Usage;
 
-		DELETE FROM Payment;
+		TRUNCATE TABLE Payment;
 
-		DELETE FROM Process_Payment;
+		TRUNCATE TABLE Process_Payment;
 
-		DELETE FROM Wallet;
+		TRUNCATE TABLE Wallet;
 
-		DELETE FROM Transfer_money;
+		TRUNCATE TABLE Transfer_money;
 
-		DELETE FROM Benefits;
+		TRUNCATE TABLE Benefits;
 
-		DELETE FROM Points_Group;
+		TRUNCATE TABLE Points_Group;
 
-		DELETE FROM Exclusive_Offer;
+		TRUNCATE TABLE Exclusive_Offer;
 
-		DELETE FROM Cashback;
+		TRUNCATE TABLE Cashback;
 
-		DELETE FROM Plan_Provides_Benefits;
+		TRUNCATE TABLE Plan_Provides_Benefits;
 
-		DELETE FROM Shop;
+		TRUNCATE TABLE Shop;
 
-		DELETE FROM Physical_Shop;
+		TRUNCATE TABLE Physical_Shop;
 
-		DELETE FROM E_shop;
+		TRUNCATE TABLE E_shop;
 
-		DELETE FROM	Voucher;
+		TRUNCATE TABLE Voucher;
 
-		DELETE FROM Technical_Support_Ticket;
+		TRUNCATE TABLE Technical_Support_Ticket;
 	END
 
 GO;
