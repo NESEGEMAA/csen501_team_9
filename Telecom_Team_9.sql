@@ -463,8 +463,20 @@ CREATE VIEW allResolvedTickets AS
 GO;
 
 -- 2.2 g
+CREATE VIEW CustomerWallet AS
+	SELECT w.*, c.first_name, c.last_name
+	FROM Wallet w
+	INNER JOIN Customer_profile c ON (w.nationalID = c.nationalID);
+
+GO;
 
 -- 2.2 h
+CREATE VIEW E_shopVouchers AS
+	SELECT e.*, v.voucherID, v.value
+	FROM E_shop e
+	LEFT OUTER JOIN Voucher v ON(e.shopID = v.shopID);
+
+GO;
 
 -- 2.2 i
 CREATE VIEW PhysicalStoreVouchers AS
