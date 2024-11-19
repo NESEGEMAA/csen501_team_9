@@ -602,6 +602,20 @@ AS
 GO;
 
 -- 2.3 h
+CREATE FUNCTION Wallet_Transfer_Amount (@Wallet_id INT, @start_date DATE, @end_date DATE)
+RETURNS DECIMAL(10,2)
+AS
+	BEGIN
+		DECLARE @TransactionAmountAverage DECIMAL(10,2)
+		
+		SELECT @TransactionAmountAverage = AVG(t.amount)
+		FROM Transfer_money t
+		WHERE t.walletID1 = @Wallet_id AND (t.trasnfer_date BETWEEN @start_date AND @end_date)
+
+		RETURN @TransactionAmountAverage
+	END
+
+GO;
 
 -- 2.3 i
 CREATE FUNCTION Wallet_MobileNo (@MobileNo MOBILE)
