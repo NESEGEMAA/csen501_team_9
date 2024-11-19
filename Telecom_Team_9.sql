@@ -799,7 +799,17 @@ AS
 GO;
 
 -- 2.4 k
+CREATE FUNCTION Subscribed_plans_5_Months (@MobileNo MOBILE)
+RETURNS TABLE
+AS
+	RETURN (
+			SELECT SP.*
+			FROM Service_Plan SP
+			INNER JOIN Subscription S ON (SP.planID = S.planID)
+			WHERE S.mobileNo = @MobileNo AND subscription_date >= DATEADD(MONTH, -5, CURRENT_TIMESTAMP)
+		)
 
+GO;
 -- 2.4 l
 
 -- 2.4 m
