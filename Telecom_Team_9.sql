@@ -3,7 +3,7 @@ CREATE DATABASE Telecom_Team_9;
 
 GO;
 
--- Custome datatypes from guidelines
+-- Custom datatypes from guidelines
 CREATE TYPE ALPHA  
 FROM VARCHAR(50);
 
