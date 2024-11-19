@@ -810,7 +810,24 @@ AS
 		)
 
 GO;
+
 -- 2.4 l
+CREATE PROCEDURE Initiate_plan_payment
+@MobileNo MOBILE,
+@amount DECIMAL(10,1),
+@payment_method ALPHA,
+@plan_id INT
+AS
+	BEGIN
+		INSERT INTO Payment
+		VALUES (@amount, CAST(CURRENT_TIMESTAMP AS DATE), @payment_method, 'successful', @MobileNo);
+
+		UPDATE Subscription
+		SET status = 'active'
+		WHERE mobileNo = @MobileNo AND planID = @plan_id;
+	END
+
+GO;
 
 -- 2.4 m
 CREATE PROCEDURE Payment_wallet_cashback
