@@ -786,6 +786,17 @@ AS
 GO;
 
 -- 2.4 j
+CREATE PROCEDURE Subscribed_plans_5_Months
+@MobileNo MOBILE
+AS
+	BEGIN
+		SELECT TOP 10 P.*
+		FROM Payment P
+		WHERE mobileNo = @MobileNo AND status = 'successful'
+		ORDER BY P.amount DESC;
+	END
+
+GO;
 
 -- 2.4 k
 
