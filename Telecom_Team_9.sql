@@ -38,7 +38,6 @@ AS
 			PRIMARY KEY (mobileNo),
 			FOREIGN KEY (nationalID) REFERENCES Customer_Profile(nationalID)
 				ON DELETE CASCADE
-				-- # Discuss whether nationalID could be updated or not
 				ON UPDATE CASCADE,
 			
 			CONSTRAINT Account_Type CHECK (account_type IN ('Post Paid', 'Prepaid', 'Pay_as_you_go')),
@@ -64,7 +63,6 @@ AS
 			PRIMARY KEY (mobileNo,planID),
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				-- # Discuss whether a mobile number would be updated
 				ON UPDATE CASCADE,
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
@@ -85,7 +83,6 @@ AS
 			PRIMARY KEY (usageID),
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				-- # Discuss whether a mobile number would be updated
 				ON UPDATE CASCADE,
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
 				ON DELETE CASCADE
@@ -102,7 +99,6 @@ AS
 			PRIMARY KEY (paymentID),
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				-- # Discuss whether a mobile number would be updated
 				ON UPDATE CASCADE,
 
 			CONSTRAINT Status_type CHECK (status IN ('successful', 'pending', 'rejected')),
@@ -133,7 +129,6 @@ AS
 			PRIMARY KEY(walletID),
 			FOREIGN KEY (nationalID) REFERENCES Customer_Profile(nationalID)
 				ON DELETE CASCADE
-				-- # Discuss whether nationalID could be updated or not
 				ON UPDATE CASCADE
 		);
 
@@ -161,13 +156,11 @@ AS
 			PRIMARY KEY (benefitID),
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				-- # Discuss whether a mobile number would be updated
 				ON UPDATE CASCADE,
 
 			CONSTRAINT Status_Type CHECK (status IN ('active', 'expired'))
 		);
 
-		-- # should it be PointsGroup or Points_Group
 		CREATE TABLE Points_Group (
 			pointID INT IDENTITY(1,1),
 			benefitID INT, 
@@ -182,7 +175,6 @@ AS
 				ON UPDATE CASCADE
 		);
 
-		-- # should it be ExclusiveOffer or Exclusive_Offer
 		CREATE TABLE Exclusive_Offer (		
 			offerID INT IDENTITY(1,1),
 			benefitID INT,
@@ -229,7 +221,6 @@ AS
 			PRIMARY KEY (shopID)
 		);
 
-		-- # should it be PhysicalShop or Physical_Shop
 		CREATE TABLE Physical_Shop (
 			shopID INT,
 			address ALPHA,
@@ -240,7 +231,6 @@ AS
 				ON UPDATE CASCADE
 		);
 
-		-- # how can I represent E-shop
 		CREATE TABLE E_shop (
 			shopID INT,
 			URL ALPHA,
@@ -265,11 +255,9 @@ AS
 				ON UPDATE CASCADE,
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				-- # Discuss whether a mobile number would be updated
 				ON UPDATE CASCADE
 		);
 
-		-- # Technical Support Ticket......
 		CREATE TABLE Technical_Support_Ticket(
 			ticketID INT IDENTITY(1,1),
 			mobileNo MOBILE,
@@ -279,7 +267,6 @@ AS
 			PRIMARY KEY (ticketID),
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
 				ON DELETE CASCADE
-				-- # Discuss whether a mobile number would be updated
 				ON UPDATE CASCADE,
 
 			CONSTRAINT Status_Type CHECK (status IN ('Open', 'In Progress', 'Resolved'))
@@ -291,6 +278,7 @@ GO;
 -- 2.1 c
 Create Procedure dropAllTables
 AS
+	-- Update this to drop from sub to parent
 	BEGIN
 		DROP TABLE Physical_Shop;
 
@@ -462,16 +450,8 @@ GO;
 
 -- 2.2 e
 CREATE VIEW allShops AS
-	-- # Details include the extra info about the shop from their types
-	(
-		SELECT *
-		FROM Shop S INNER JOIN Physical_Shop PS ON S.shopID = PS.shopID
-	)
-	UNION
-	(
-		SELECT *
-		FROM Shop S INNER JOIN E_shop ES ON S.shopID = ES.shopID
-	)
+	SELECT s.*
+	FROM Shop S
 
 GO;
 
@@ -492,7 +472,6 @@ CREATE VIEW PhysicalStoreVouchers AS
 	SELECT ps.*, v.voucherID, v.value
 	FROM Physical_Shop ps INNER JOIN Voucher v
 	ON (ps.shopID = v.shopID)
-	-- The voucher is considered redeemed if it has a redemption date, otherwise it is not redeemed yet.
 	WHERE v.redeem_date IS NOT NULL;
 
 GO;
@@ -532,7 +511,6 @@ CREATE FUNCTION Account_Usage_Plan (@MobileNo MOBILE, @from_date date)
 RETURNS TABLE
 AS
 	RETURN (
-		-- # start date and end date in the plan_usage table are assumed to be ~a month?
 		SELECT P.planID, SUM(P.data_consumption) total_data_consumed, SUM(P.minutes_used) total_minutes_used, SUM(P.SMS_sent) total_SMS
 		FROM Plan_Usage P
 		WHERE P.mobileNO = @MobileNo AND P.start_date >= @from_date
@@ -547,25 +525,15 @@ CREATE PROCEDURE Benefits_Account
 @planID INT
 AS
 	BEGIN
-		/*
-			-- Shows the table before deletion
-			SELECT B.*
-			FROM Benefits B
-			WHERE B.mobileNo = @MobileNo
-		*/
-
 		DELETE B FROM Benefits B
 		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
 		WHERE S.planID = @planID AND B.mobileNo = @MobileNo
 
-		/*
-			-- Shows the table after deletion
-			SELECT B.*
-			FROM Benefits B
-			WHERE B.mobileNo = @MobileNo
-		*/
+		SELECT B.*
+		FROM Benefits B
+		WHERE B.mobileNo = @MobileNo
 	END
-	-- # Should there be a select statement outputting the table after deletion?
+
 GO;
 
 -- 2.3 e
@@ -574,7 +542,6 @@ RETURNS TABLE
 AS
 	RETURN
 	(
-		-- # There is no type 'SMS'
 		SELECT eo.*
 		FROM Exclusive_Offer eo
 		INNER JOIN Benefits b ON eo.benefitID = b.benefitID
@@ -625,14 +592,12 @@ AS
 		ELSE
 			SET @result = 0;
 
-		-- # Assumption: 0 is false, 1 is true 
 		RETURN @result;
 	END
 
 GO;
 
 -- 2.3 j
--- # what does updating the total points mean
 CREATE PROCEDURE Total_Points_Account
 @MobileNo MOBILE,
 @newPoints INT OUTPUT
@@ -729,7 +694,6 @@ CREATE FUNCTION Cashback_Wallet_Customer (@NationalID int)
 RETURNS TABLE
 AS
 	RETURN	(
-				-- # Should there be a restriction on what the user can view, since the extra data is redundant for a customer?
 				SELECT C.*
 				FROM Cashback C INNER JOIN Wallet W ON (W.walletID = C.walletID)
 				WHERE W.nationalID = @NationalID
@@ -743,8 +707,7 @@ CREATE PROCEDURE Ticket_Account_Customer
 @unresolved INT OUTPUT
 AS
 	BEGIN
-		-- # Number of technical support tickets as a column or as an INT (current implementation)?
-		SELECT @unresolved = COUNT (*) 
+		SELECT @unresolved = COUNT(*) 
 		FROM Technical_Support_Ticket T INNER JOIN Customer_Account C ON (T.mobileNo = C.mobileNo)
 		WHERE T.status <> 'Resolved' AND C.nationalID = @NationalID
 		GROUP BY C.mobileNo
@@ -824,10 +787,48 @@ AS
 GO;
 
 -- 2.4 j
+CREATE PROCEDURE Subscribed_plans_5_Months
+@MobileNo MOBILE
+AS
+	BEGIN
+		SELECT TOP 10 P.*
+		FROM Payment P
+		WHERE mobileNo = @MobileNo AND status = 'successful'
+		ORDER BY P.amount DESC;
+	END
+
+GO;
 
 -- 2.4 k
+CREATE FUNCTION Subscribed_plans_5_Months (@MobileNo MOBILE)
+RETURNS TABLE
+AS
+	RETURN (
+			SELECT SP.*
+			FROM Service_Plan SP
+			INNER JOIN Subscription S ON (SP.planID = S.planID)
+			WHERE S.mobileNo = @MobileNo AND subscription_date >= DATEADD(MONTH, -5, CURRENT_TIMESTAMP)
+		)
+
+GO;
 
 -- 2.4 l
+CREATE PROCEDURE Initiate_plan_payment
+@MobileNo MOBILE,
+@amount DECIMAL(10,1),
+@payment_method ALPHA,
+@plan_id INT
+AS
+	BEGIN
+		INSERT INTO Payment
+		VALUES (@amount, CAST(CURRENT_TIMESTAMP AS DATE), @payment_method, 'successful', @MobileNo);
+
+		UPDATE Subscription
+		SET status = 'active'
+		WHERE mobileNo = @MobileNo AND planID = @plan_id;
+	END
+
+GO;
 
 -- 2.4 m
 CREATE PROCEDURE Payment_wallet_cashback
@@ -841,7 +842,6 @@ AS
 		DECLARE @walletID INT
 		DECLARE @cashback INT
 
-		-- # Should we not output the tables?
 		SELECT @paymentAmount = amount, @walletID = walletID
 		FROM Payment INNER JOIN Wallet
 		ON (Payment.mobileNo = Wallet.mobileNo)
@@ -924,6 +924,7 @@ AS
 				END
 			END
 			-- # possible printing error message
+			-- $ sure
 		END
 		-- # possible printing error message
 	END
