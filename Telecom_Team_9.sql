@@ -586,6 +586,20 @@ AS
 GO;
 
 -- 2.3 g
+CREATE FUNCTION Wallet_Cashback_Amount (@WalletId INT, @planId INT)
+RETURNS INT
+AS
+	BEGIN
+		DECLARE @cashback INT
+		SELECT @cashback = c.amount
+		FROM Cashback c
+		INNER JOIN Plan_Provides_Benefits ppb ON (ppb.benefitID = c.benefitID)
+		WHERE ppb.planID = @planId AND c.walletID = @WalletId;
+
+		RETURN @cashback
+	END
+
+GO;
 
 -- 2.3 h
 
