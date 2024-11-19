@@ -970,3 +970,41 @@ AS
 	END
 
 GO;
+
+-- Extra: Roles
+
+CREATE ROLE Admin;
+CREATE ROLE Customer;
+
+-- Extra: Granting execution of admin functions and procedures to role Admin
+GRANT EXECUTE ON dbo.Account_Plan TO Admin;
+GRANT EXECUTE ON dbo.Account_Plan_date TO Admin;
+GRANT EXECUTE ON dbo.Account_Usage_Plan TO Admin;
+GRANT EXECUTE ON dbo.Benefits_Account TO Admin;
+GRANT EXECUTE ON dbo.Account_SMS_Offers TO Admin;
+GRANT EXECUTE ON dbo.Account_Payment_Points TO Admin;
+GRANT EXECUTE ON dbo.Wallet_Cashback_Amount TO Admin;
+GRANT EXECUTE ON dbo.Wallet_Transfer_Amount TO Admin;
+GRANT EXECUTE ON dbo.Wallet_MobileNo TO Admin;
+GRANT EXECUTE ON dbo.Total_Points_Account TO Admin;
+
+-- Extra: Granting execution of customer functions and procdure to the role Customer
+GRANT EXECUTE ON dbo.AccountLoginValidation TO Customer;
+GRANT EXECUTE ON dbo.Consumption TO Customer;
+GRANT EXECUTE ON dbo.Unsubscribed_Plans TO Customer;
+GRANT EXECUTE ON dbo.Usage_Plan_CurrentMonth TO Customer;
+GRANT EXECUTE ON dbo.Cashback_Wallet_Customer TO Customer;
+GRANT EXECUTE ON dbo.Ticket_Account_Customer TO Customer;
+GRANT EXECUTE ON dbo.Account_Highest_Voucher TO Customer;
+GRANT EXECUTE ON dbo.Remaining_plan_amount TO Customer;
+GRANT EXECUTE ON dbo.Extra_plan_amount TO Customer;
+GRANT EXECUTE ON dbo.Top_Successful_Payments TO Customer;
+GRANT EXECUTE ON dbo.Subscribed_plans_5_Months TO Customer;
+GRANT EXECUTE ON dbo.Initiate_plan_payment TO Customer;
+GRANT EXECUTE ON dbo.Payment_wallet_cashback TO Customer;
+GRANT EXECUTE ON dbo.Initiate_balance_payment TO Customer;
+GRANT EXECUTE ON dbo.Redeem_voucher_points TO Customer;
+
+/*
+	This ia a line to make the project 1010 loc (Shoutout Ahmed Hamdy)
+*/
