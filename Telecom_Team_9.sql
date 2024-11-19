@@ -291,6 +291,7 @@ GO;
 -- 2.1 c
 Create Procedure dropAllTables
 AS
+	-- Update this to drop from sub to parent
 	BEGIN
 		DROP TABLE Customer_profile;
 
@@ -462,6 +463,7 @@ GO;
 -- 2.2 e
 CREATE VIEW allShops AS
 	-- # Details include the extra info about the shop from their types
+	-- $ Just show info from Shop
 	(
 		SELECT *
 		FROM Shop S INNER JOIN Physical_Shop PS ON S.shopID = PS.shopID
@@ -492,6 +494,7 @@ CREATE VIEW PhysicalStoreVouchers AS
 	FROM Physical_Shop ps INNER JOIN Voucher v
 	ON (ps.shopID = v.shopID)
 	-- The voucher is considered redeemed if it has a redemption date, otherwise it is not redeemed yet.
+	-- $ Valid assumption
 	WHERE v.redeem_date IS NOT NULL;
 
 GO;
@@ -532,6 +535,7 @@ RETURNS TABLE
 AS
 	RETURN (
 		-- # start date and end date in the plan_usage table are assumed to be ~a month?
+	        -- $ Valid assumption
 		SELECT P.planID, SUM(P.data_consumption) total_data_consumed, SUM(P.minutes_used) total_minutes_used, SUM(P.SMS_sent) total_SMS
 		FROM Plan_Usage P
 		WHERE P.mobileNO = @MobileNo AND P.start_date >= @from_date
@@ -546,25 +550,17 @@ CREATE PROCEDURE Benefits_Account
 @planID INT
 AS
 	BEGIN
-		/*
-			-- Shows the table before deletion
-			SELECT B.*
-			FROM Benefits B
-			WHERE B.mobileNo = @MobileNo
-		*/
-
 		DELETE B FROM Benefits B
 		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
 		WHERE S.planID = @planID AND B.mobileNo = @MobileNo
 
-		/*
-			-- Shows the table after deletion
-			SELECT B.*
-			FROM Benefits B
-			WHERE B.mobileNo = @MobileNo
-		*/
+		-- $ Shows the table after deletion
+		SELECT B.*
+		FROM Benefits B
+		WHERE B.mobileNo = @MobileNo
 	END
 	-- # Should there be a select statement outputting the table after deletion?
+	-- $ Yes
 GO;
 
 -- 2.3 e
@@ -574,6 +570,7 @@ AS
 	RETURN
 	(
 		-- # There is no type 'SMS'
+	        -- $ Current assumption is valid
 		SELECT eo.*
 		FROM Exclusive_Offer eo
 		INNER JOIN Benefits b ON eo.benefitID = b.benefitID
@@ -624,7 +621,8 @@ AS
 		ELSE
 			SET @result = 0;
 
-		-- # Assumption: 0 is false, 1 is true 
+		-- # Assumption: 0 is false, 1 is true
+                -- $ Valid assumption
 		RETURN @result;
 	END
 
@@ -632,6 +630,7 @@ GO;
 
 -- 2.3 j
 -- # what does updating the total points mean
+-- $ Current implementation is correct and assumes the procedure is executed "at the start"
 CREATE PROCEDURE Total_Points_Account
 @MobileNo MOBILE,
 @newPoints INT OUTPUT
@@ -729,6 +728,7 @@ RETURNS TABLE
 AS
 	RETURN	(
 				-- # Should there be a restriction on what the user can view, since the extra data is redundant for a customer?
+	                        -- # No
 				SELECT C.*
 				FROM Cashback C INNER JOIN Wallet W ON (W.walletID = C.walletID)
 				WHERE W.nationalID = @NationalID
@@ -743,6 +743,7 @@ CREATE PROCEDURE Ticket_Account_Customer
 AS
 	BEGIN
 		-- # Number of technical support tickets as a column or as an INT (current implementation)?
+	        -- $ doesn't matter
 		SELECT @unresolved = COUNT (*) 
 		FROM Technical_Support_Ticket T INNER JOIN Customer_Account C ON (T.mobileNo = C.mobileNo)
 		WHERE T.status <> 'Resolved' AND C.nationalID = @NationalID
@@ -841,6 +842,7 @@ AS
 		DECLARE @cashback INT
 
 		-- # Should we not output the tables?
+	        -- Yes; however, the current implementation shouldn't output a table since the output is stored im variables
 		SELECT @paymentAmount = amount, @walletID = walletID
 		FROM Payment INNER JOIN Wallet
 		ON (Payment.mobileNo = Wallet.mobileNo)
@@ -923,6 +925,7 @@ AS
 				END
 			END
 			-- # possible printing error message
+			-- $ sure
 		END
 		-- # possible printing error message
 	END
