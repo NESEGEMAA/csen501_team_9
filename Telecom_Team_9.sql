@@ -1,7 +1,7 @@
 -- 2.1 a
 CREATE DATABASE Telecom_Team_9;
 
-GO;
+GO
 
 -- Custom datatypes from guidelines
 CREATE TYPE ALPHA  
@@ -10,7 +10,7 @@ FROM VARCHAR(50);
 CREATE TYPE MOBILE
 FROM CHAR(11);
 
-GO;
+GO
 
 -- 2.1 b
 CREATE PROCEDURE createAllTables
@@ -273,7 +273,7 @@ AS
 		);
 	END
 
-GO;
+GO
 
 -- 2.1 c
 Create Procedure dropAllTables
@@ -320,7 +320,7 @@ AS
 
 	END
 
-GO;
+GO
 
 -- 2.1 d
 Create Procedure dropAllProceduresFunctionsViews
@@ -371,7 +371,7 @@ AS
 			Num_of_cashback;
 	END
 
-GO;
+GO
 
 -- 2.1 e
 Create Procedure clearAllTables
@@ -416,7 +416,7 @@ AS
 		TRUNCATE TABLE Technical_Support_Ticket;
 	END
 
-GO;
+GO
 
 -- 2.2 a
 Create View allCustomerAccounts AS
@@ -425,14 +425,14 @@ Create View allCustomerAccounts AS
 	ON p.nationalID = a.nationalID
 	WHERE a.status = 'active';
 
-GO;
+GO
 
 -- 2.2 b
 Create View allServicePlans AS
 	SELECT *
 	FROM Service_Plan;
 
-GO;
+GO
 
 -- 2.2 c
 Create View allBenefits AS
@@ -440,20 +440,20 @@ Create View allBenefits AS
 	FROM Benefits B
 	WHERE B.status = 'active'
 
-GO;
+GO
 
 -- 2.2 d
 Create View AccountPayments AS
 	SELECT P.*
 	FROM Payment P INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
-GO;
+GO
 
 -- 2.2 e
 CREATE VIEW allShops AS
 	SELECT s.*
 	FROM Shop S
 
-GO;
+GO
 
 -- 2.2 f
 CREATE VIEW allResolvedTickets AS
@@ -461,7 +461,7 @@ CREATE VIEW allResolvedTickets AS
 	FROM Technical_Support_Ticket
 	WHERE status = 'resolved';
 
-GO;
+GO
 
 -- 2.2 g
 CREATE VIEW CustomerWallet AS
@@ -469,7 +469,7 @@ CREATE VIEW CustomerWallet AS
 	FROM Wallet w
 	INNER JOIN Customer_profile c ON (w.nationalID = c.nationalID);
 
-GO;
+GO
 
 -- 2.2 h
 CREATE VIEW E_shopVouchers AS
@@ -477,7 +477,7 @@ CREATE VIEW E_shopVouchers AS
 	FROM E_shop e
 	LEFT OUTER JOIN Voucher v ON(e.shopID = v.shopID);
 
-GO;
+GO
 
 -- 2.2 i
 CREATE VIEW PhysicalStoreVouchers AS
@@ -486,7 +486,7 @@ CREATE VIEW PhysicalStoreVouchers AS
 	ON (ps.shopID = v.shopID)
 	WHERE v.redeem_date IS NOT NULL;
 
-GO;
+GO
 
 -- 2.2 j
 CREATE VIEW Num_of_cashback AS
@@ -494,7 +494,7 @@ CREATE VIEW Num_of_cashback AS
 	FROM Cashback c
 	GROUP BY c.walletID;
 
-GO;
+GO
 
 -- 2.3 a
 CREATE PROCEDURE Account_Plan
@@ -504,7 +504,7 @@ AS
 		FROM Customer_Account C, Subscription S, Service_Plan P
 		WHERE C.mobileNo = S.mobileNo AND S.planID = P.planID
 	END
-GO;
+GO
 
 -- 2.3 b
 CREATE FUNCTION Account_Plan_date (@Subscription_Date date, @Plan_id int)
@@ -516,7 +516,7 @@ AS
 		WHERE C.mobileNo = S.mobileNo AND S.planID = @Plan_id AND S.date = @Subscription_Date
 	)
 
-GO;
+GO
 
 -- 2.3 c
 CREATE FUNCTION Account_Usage_Plan (@MobileNo MOBILE, @from_date date)
@@ -529,7 +529,7 @@ AS
 		GROUP BY P.planID
 	)
 
-GO;
+GO
 
 -- 2.3 d
 CREATE PROCEDURE Benefits_Account
@@ -546,7 +546,7 @@ AS
 		WHERE B.mobileNo = @MobileNo
 	END
 
-GO;
+GO
 
 -- 2.3 e
 CREATE FUNCTION Account_SMS_Offers (@MobileNo MOBILE)
@@ -560,7 +560,7 @@ AS
 		WHERE b.mobileNo = @MobileNo AND eo.SMS_offered > 0
 	);
 
-GO;
+GO
 
 -- 2.3 f
 CREATE PROCEDURE Account_Payment_Points
@@ -583,7 +583,7 @@ AS
 	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
 	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
 
-GO;
+GO
 
 -- 2.3 g
 CREATE FUNCTION Wallet_Cashback_Amount (@WalletId INT, @planId INT)
@@ -599,7 +599,7 @@ AS
 		RETURN @cashback
 	END
 
-GO;
+GO
 
 -- 2.3 h
 CREATE FUNCTION Wallet_Transfer_Amount (@Wallet_id INT, @start_date DATE, @end_date DATE)
@@ -615,7 +615,7 @@ AS
 		RETURN @TransactionAmountAverage
 	END
 
-GO;
+GO
 
 -- 2.3 i
 CREATE FUNCTION Wallet_MobileNo (@MobileNo MOBILE)
@@ -635,7 +635,7 @@ AS
 		RETURN @result;
 	END
 
-GO;
+GO
 
 -- 2.3 j
 CREATE PROCEDURE Total_Points_Account
@@ -655,7 +655,7 @@ AS
 		WHERE mobileNo = @MobileNo;
 	END
 
-GO;
+GO
 
 -- 2.4 a
 CREATE FUNCTION AccountLoginValidation (@MobileNo MOBILE, @password ALPHA)
@@ -673,7 +673,7 @@ AS
 		SET @OUT_BIT = 0;
 	RETURN @OUT_BIT
 	END
-GO;
+GO
 
 -- 2.4 b
 CREATE FUNCTION Consumption (@Plan_name ALPHA, @start_date date, @end_date date)
@@ -695,7 +695,7 @@ AS
 			)
 		) AS O
 	)
-GO;
+GO
 
 -- 2.4 c
 CREATE PROCEDURE Unsubscribed_Plans
@@ -714,7 +714,7 @@ AS
 		)
 	END
 
-GO;
+GO
 
 -- 2.4 d
 CREATE FUNCTION Usage_Plan_CurrentMonth(@MobileNo MOBILE)
@@ -727,7 +727,7 @@ AS
 				WHERE S.mobileNo = @MobileNo AND S.status = 'active' AND MONTH(CURRENT_TIMESTAMP) = MONTH(P.start_date)
 			)
 
-GO;
+GO
 
 -- 2.4 e
 CREATE FUNCTION Cashback_Wallet_Customer (@NationalID int)
@@ -739,7 +739,7 @@ AS
 				WHERE W.nationalID = @NationalID
 			)
 
-GO;
+GO
 
 -- 2.4 f
 CREATE PROCEDURE Ticket_Account_Customer
@@ -753,7 +753,7 @@ AS
 		GROUP BY C.mobileNo
 	END
 
-GO;
+GO
 
 -- 2.4 g
 CREATE PROCEDURE Account_Highest_Voucher
@@ -773,7 +773,7 @@ AS
 	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
 	PRINT 'The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
 
-GO;
+GO
 
 -- 2.4 h
 CREATE FUNCTION Remaining_plan_amount (@MobileNo MOBILE, @plan_name ALPHA)
@@ -798,7 +798,7 @@ AS
 		RETURN @Remaining_amount;
 	END
 
-GO;
+GO
 
 -- 2.4 i
 CREATE FUNCTION Extra_plan_amount(@MobileNo MOBILE, @plan_name ALPHA)
@@ -824,7 +824,7 @@ AS
 		RETURN @Extra_amount;
 	END
 
-GO;
+GO
 
 -- 2.4 j
 CREATE PROCEDURE Subscribed_plans_5_Months
@@ -837,7 +837,7 @@ AS
 		ORDER BY P.amount DESC;
 	END
 
-GO;
+GO
 
 -- 2.4 k
 CREATE FUNCTION Subscribed_plans_5_Months (@MobileNo MOBILE)
@@ -850,7 +850,7 @@ AS
 			WHERE S.mobileNo = @MobileNo AND subscription_date >= DATEADD(MONTH, -5, CURRENT_TIMESTAMP)
 		)
 
-GO;
+GO
 
 -- 2.4 l
 CREATE PROCEDURE Initiate_plan_payment
@@ -868,7 +868,7 @@ AS
 		WHERE mobileNo = @MobileNo AND planID = @plan_id;
 	END
 
-GO;
+GO
 
 -- 2.4 m
 CREATE PROCEDURE Payment_wallet_cashback
@@ -893,7 +893,7 @@ AS
 		VALUES(@benefit_id, @walletId, @cashback, CAST(CURRENT_TIMESTAMP AS DATE))
 	END
 
-GO;
+GO
 
 -- 2.4 n
 CREATE PROCEDURE Initiate_balance_payment
@@ -911,7 +911,7 @@ AS
 		WHERE mobileNo = @MobileNo;
 	END
 
-GO;
+GO
 
 -- 2.4 o
 CREATE PROCEDURE Redeem_voucher_points
@@ -969,7 +969,7 @@ AS
 		-- # possible printing error message
 	END
 
-GO;
+GO
 
 -- Extra: Roles
 
