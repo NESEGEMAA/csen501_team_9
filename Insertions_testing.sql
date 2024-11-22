@@ -19,14 +19,16 @@ VALUES
 -- Dummy Data for Subscription
 INSERT INTO Subscription (mobileNo, planID, subscription_date, status) 
 VALUES 
-(1234567890, 1, '2023-02-01', 'active'),
+(1234567890, 1, '2024-07-01', 'active'),
 (9876543210, 2, '2023-07-01', 'onhold');
 
 -- Dummy Data for Plan_Usage
 INSERT INTO Plan_Usage (start_date, end_date, data_consumption, minutes_used, SMS_sent, mobileNo, planID) 
 VALUES 
-('2023-02-01', '2023-03-01', 1, 50, 20, 1234567890, 1),
-('2023-07-01', '2023-08-01', 3, 100, 50, 9876543210, 2);
+('2007-11-01', '2027-11-01', 1, 50, 20, 1234567890, 1),
+('2024-11-01', '2024-12-01', 1, 50, 20, 1234567890, 1),
+('2023-07-01', '2023-08-01', 3, 100, 50, 9876543210, 2),
+('2023-08-01', '2023-09-01', 3, 100, 50, 9876543210, 2);
 
 -- Dummy Data for Payment
 INSERT INTO Payment (amount, date_of_payment, payment_method, status, mobileNo) 
@@ -108,7 +110,8 @@ VALUES
 -- Dummy Data for Voucher
 INSERT INTO Voucher (value, expiry_date, points, mobileNo, shopID, redeem_date) 
 VALUES 
-(5, '2023-12-31', 10, 1234567890, 1, '2023-11-01'),
+(10, '2027-12-31', 10, 1234567890, 1, NULL),
+(10, '2023-12-31', 10, 1234567890, 1, '2023-11-01'),
 (10, '2024-01-31', 20, 9876543210, 2, '2024-01-01');
 
 -- Dummy Data for Technical_Support_Ticket
@@ -186,3 +189,74 @@ SELECT * FROM Customer_Account;
 EXEC dropAllTables;
 EXEC createAllTables;
 		
+SELECT dbo.AccountLoginValidation(1234567890,'pass123');
+SELECT * FROM dbo.Consumption('Premium', '2023-07-01', '2023-09-01');
+
+DROP FUNCTION Consumption;
+
+DECLARE @MobileNo MOBILE;
+SET @MobileNo = 1234567890;
+EXEC Unsubscribed_Plans @MobileNo;
+
+SELECT * FROM dbo.Usage_Plan_CurrentMonth(1234567890);
+SELECT * FROM dbo.Cashback_Wallet_Customer(1001);
+
+DECLARE @NationalID INT, @unresolved INT;
+SET @NationalID = 1002;
+EXEC Ticket_Account_Customer @NationalID, @unresolved OUTPUT;
+PRINT 'Number of unresolved tickets: ' + STR(@unresolved);
+
+DECLARE @MobileNo MOBILE = '1234567890', @Voucher_id INT;
+EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
+PRINT 'The voucher with the highest value is: ' + STR(@Voucher_id)
+
+SELECT dbo.Remaining_plan_amount(1234567890,'Basic');
+SELECT dbo.Remaining_plan_amount(9876543210,'Premium');
+SELECT dbo.Extra_plan_amount(1234567890,'Basic');
+SELECT dbo.Extra_plan_amount(9876543210,'Premium');
+
+
+DECLARE @MobileNo MOBILE;
+SET @MobileNo = 1234567890;
+EXEC Top_Successful_Payments @MobileNo;
+
+SELECT * FROM dbo.Subscribed_plans_5_Months(1234567890);
+
+DECLARE @MobileNo MOBILE, @amount DECIMAL(10,1), @payment_method ALPHA, @plan_id INT;
+SET @MobileNo = 9876543210
+SET @amount = 10.0
+SET @payment_method = 'cash'
+SET @plan_id = 2
+EXEC Initiate_plan_payment @MobileNo, @amount, @payment_method, @plan_id;
+
+SELECT * FROM Payment
+
+SELECT * FROM Subscription;
+
+DECLARE @MobileNo MOBILE, @payment_id INT, @benefit_id INT;
+SET @MobileNo = 1234567890;
+SET @payment_id = 1;
+SET @benefit_id = 1;
+EXEC Payment_wallet_cashback @MobileNo, @payment_id, @benefit_id;
+
+SELECT * FROM Cashback;
+
+
+DECLARE @MobileNo MOBILE, @amount decimal(10,1), @payment_method ALPHA
+SET @MobileNo = 9876543210
+SET @amount = 10.0
+SET @payment_method = 'cash'
+EXEC Initiate_balance_payment @MobileNo, @amount, @payment_method;
+
+SELECT * FROM Payment;
+SELECT * FROM Customer_Account;
+
+DECLARE @MobileNo MOBILE, @voucher_id INT
+SET @MobileNo = 1234567890;
+SET @voucher_id = 5;
+EXEC Redeem_voucher_points @MobileNo, @voucher_id;
+
+SELECT * FROM Customer_Account;
+SELECT * FROM Voucher;
+
+
