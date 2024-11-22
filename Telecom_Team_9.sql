@@ -517,7 +517,6 @@ AS
 
 		SELECT B.*
 		FROM Benefits B
-		WHERE B.mobileNo = @MobileNo
 	END
 
 GO
