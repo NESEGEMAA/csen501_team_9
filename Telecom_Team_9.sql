@@ -372,7 +372,7 @@ GO
 
 -- 2.2 a
 Create View allCustomerAccounts AS
-	SELECT *
+	SELECT p.first_name, p.last_name, p.email, p.address, p.date_of_birth, a.*
 	FROM Customer_profile p INNER JOIN Customer_Account a 
 	ON p.nationalID = a.nationalID
 	WHERE a.status = 'active';
