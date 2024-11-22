@@ -396,7 +396,7 @@ GO
 
 -- 2.2 d
 Create View AccountPayments AS
-	SELECT P.*
+	SELECT P.paymentID, P.amount, P.date_of_payment, P.payment_method, P.status AS 'Payment status', C.*
 	FROM Payment P INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
 GO
 
