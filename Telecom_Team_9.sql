@@ -647,20 +647,13 @@ CREATE FUNCTION Consumption (@Plan_name ALPHA, @start_date date, @end_date date)
 RETURNS TABLE
 AS
 	RETURN (
-		SELECT SUM(O.data_consumption) AS 'Data consumption', SUM(O.minutes_used) AS 'Minutes used', SUM(O.SMS_sent) AS 'SMS sent'
+		SELECT SUM(U.data_consumption) AS 'Data consumption', SUM(U.minutes_used) AS 'Minutes used', SUM(U.SMS_sent) AS 'SMS sent'
 		FROM (
 			(
 				SELECT U.data_consumption, U.minutes_used, U.SMS_sent
 				FROM Plan_Usage U, Service_Plan P
-				WHERE P.name = @Plan_name AND P.planID = U.planID AND U.start_date >= @start_date
-			)
-			EXCEPT
-			(
-				SELECT U.data_consumption, U.minutes_used, U.SMS_sent
-				FROM Plan_Usage U, Service_Plan P
-				WHERE P.name = @Plan_name AND P.planID = U.planID AND U.end_date <= @end_date
-			)
-		) AS O
+		WHERE P.name = @Plan_name AND P.planID = U.planID AND U.start_date >= @start_date AND U.end_date <= @end_date
+			
 	)
 GO
 
