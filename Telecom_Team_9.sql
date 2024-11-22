@@ -736,7 +736,7 @@ AS
 		DECLARE @payment_amount DECIMAL(10,1);
 		DECLARE @Remaining_amount DECIMAL(10,1);
 
-		SELECT @price = ISNULL(sp.price,0), @payment_amount = SUM(ISNULL(p.amount,0))
+		SELECT @price = ISNULL(sp.price,0), @payment_amount = ISNULL(p.amount,0)
 		FROM Payment p
 		LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
 		LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
