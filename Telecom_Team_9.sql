@@ -444,7 +444,7 @@ GO
 
 -- 2.2 j
 CREATE VIEW Num_of_cashback AS
-	SELECT c.walletID, COUNT(c.CashbackID)
+	SELECT c.walletID, COUNT(c.CashbackID) AS 'number of cashback'
 	FROM Cashback c
 	GROUP BY c.walletID;
 
