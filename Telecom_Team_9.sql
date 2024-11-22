@@ -425,8 +425,9 @@ GO
 
 -- 2.2 h
 CREATE VIEW E_shopVouchers AS
-	SELECT e.*, v.voucherID, v.value
-	FROM E_shop e
+	SELECT s.*, e.URL, e.rating, v.voucherID, v.value
+	FROM Shop s
+	INNER JOIN E_shop e ON (s.shopID = e.shopID)
 	LEFT OUTER JOIN Voucher v ON(e.shopID = v.shopID);
 
 GO
