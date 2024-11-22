@@ -761,11 +761,11 @@ AS
 		DECLARE @payment_amount DECIMAL(10,1);
 		DECLARE @Extra_amount DECIMAL(10,1);
 
-		SELECT @price = ISNULL(sp.price,0), @payment_amount = SUM(ISNULL(p.amount,0))
+		SELECT @price = ISNULL(sp.price,0), @payment_amount = ISNULL(p.amount,0)
 		FROM Payment p
 		LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
 		LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
-		WHERE p.mobileNo = @MobileNo AND sp.plan_name = @plan_name;
+		WHERE p.mobileNo = @MobileNo AND sp.name = @plan_name;
 
 		IF @payment_amount > @price
 			SET @Extra_amount = @payment_amount - @price;
