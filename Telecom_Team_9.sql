@@ -434,9 +434,10 @@ GO
 
 -- 2.2 i
 CREATE VIEW PhysicalStoreVouchers AS
-	SELECT ps.*, v.voucherID, v.value
-	FROM Physical_Shop ps INNER JOIN Voucher v
-	ON (ps.shopID = v.shopID)
+	SELECT s.*, ps.address, ps.working_hours, v.voucherID, v.value
+	FROM Shop s
+	INNER JOIN Physical_Shop ps ON (s.shopID = ps.shopID)
+	INNER JOIN Voucher v ON (ps.shopID = v.shopID)
 	WHERE v.redeem_date IS NOT NULL;
 
 GO
