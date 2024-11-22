@@ -41,7 +41,7 @@ AS
 				ON UPDATE CASCADE,
 			
 			CONSTRAINT Account_Type CHECK (account_type IN ('Post Paid', 'Prepaid', 'Pay_as_you_go')),
-			CONSTRAINT Status_Type CHECK (status IN ('active', 'onhold'))
+			CONSTRAINT Customer_Account_Status_Type CHECK (status IN ('active', 'onhold'))
 		);
 
 		CREATE TABLE Service_Plan(
@@ -68,7 +68,7 @@ AS
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
 
-			CONSTRAINT Status_Type CHECK (status IN ('active', 'onhold'))
+			CONSTRAINT Subscription_Status_Type CHECK (status IN ('active', 'onhold'))
 		);
 
 		CREATE TABLE Plan_Usage(
@@ -101,7 +101,7 @@ AS
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
 
-			CONSTRAINT Status_type CHECK (status IN ('successful', 'pending', 'rejected')),
+			CONSTRAINT Payment_Status_type CHECK (status IN ('successful', 'pending', 'rejected')),
 			CONSTRAINT Payment_Type CHECK (payment_method IN ('cash', 'credit'))
 		);
 		
@@ -140,8 +140,8 @@ AS
 			transfer_date DATE,
 			PRIMARY KEY (walletID1, walletID2, transfer_id),
 			FOREIGN KEY (walletID1) REFERENCES Wallet(walletID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+				ON DELETE NO ACTION
+				ON UPDATE NO ACTION,
 			FOREIGN KEY (walletID2) REFERENCES Wallet(walletID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE
@@ -158,7 +158,7 @@ AS
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
 
-			CONSTRAINT Status_Type CHECK (status IN ('active', 'expired'))
+			CONSTRAINT Benefits_Status_Type CHECK (status IN ('active', 'expired'))
 		);
 
 		CREATE TABLE Points_Group (
@@ -269,7 +269,7 @@ AS
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
 
-			CONSTRAINT Status_Type CHECK (status IN ('Open', 'In Progress', 'Resolved'))
+			CONSTRAINT TST_Status_Type CHECK (status IN ('Open', 'In Progress', 'Resolved'))
 		);
 	END
 
