@@ -340,7 +340,7 @@ AS
 		DELETE FROM Technical_Support_Ticket;
 
 		DELETE FROM Plan_Provides_Benefits;
-
+		
 		DELETE FROM Cashback;
 
 		DELETE FROM Points_Group;
@@ -612,7 +612,7 @@ CREATE PROCEDURE Total_Points_Account
 AS
 	BEGIN
 		SELECT @newPoints = SUM(pointsAmount)
-		FROM Points_Group pg INNER JOIN Benefit b
+		FROM Points_Group pg INNER JOIN Benefits b
 		ON (pg.benefitID = b.benefitID)
 		-- Checking for validity of points group, and considering it not used.
 		WHERE b.mobileNo = @MobileNo AND b.validity_date >= CURRENT_TIMESTAMP;
