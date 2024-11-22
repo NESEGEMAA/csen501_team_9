@@ -329,43 +329,43 @@ GO
 Create Procedure clearAllTables
 AS
 	BEGIN
-		TRUNCATE TABLE Customer_profile;
+		DELETE FROM Physical_Shop;
 
-		TRUNCATE TABLE Customer_Account;
+		DELETE FROM E_shop;
 
-		TRUNCATE TABLE Service_Plan;
+		DELETE FROM Voucher;
 
-		TRUNCATE TABLE Subscription;
+		DELETE FROM Shop;
 
-		TRUNCATE TABLE Plan_Usage;
+		DELETE FROM Technical_Support_Ticket;
 
-		TRUNCATE TABLE Payment;
+		DELETE FROM Plan_Provides_Benefits;
 
-		TRUNCATE TABLE Process_Payment;
+		DELETE FROM Cashback;
 
-		TRUNCATE TABLE Wallet;
+		DELETE FROM Points_Group;
 
-		TRUNCATE TABLE Transfer_money;
+		DELETE FROM Exclusive_Offer;
 
-		TRUNCATE TABLE Benefits;
+		DELETE FROM Benefits;
 
-		TRUNCATE TABLE Points_Group;
+		DELETE FROM Transfer_money;
 
-		TRUNCATE TABLE Exclusive_Offer;
+		DELETE FROM Wallet;
 
-		TRUNCATE TABLE Cashback;
+		DELETE FROM Process_Payment;
 
-		TRUNCATE TABLE Plan_Provides_Benefits;
+		DELETE FROM Payment;
 
-		TRUNCATE TABLE Shop;
+		DELETE FROM Plan_Usage;
 
-		TRUNCATE TABLE Physical_Shop;
+		DELETE FROM Subscription;
 
-		TRUNCATE TABLE E_shop;
+		DELETE FROM Service_Plan;
 
-		TRUNCATE TABLE Voucher;
+		DELETE FROM Customer_Account;
 
-		TRUNCATE TABLE Technical_Support_Ticket;
+		DELETE FROM Customer_profile;
 	END
 
 GO
