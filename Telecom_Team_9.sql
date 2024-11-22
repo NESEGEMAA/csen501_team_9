@@ -551,12 +551,6 @@ AS
 		WHERE P.mobileNo = @MobileNo AND P.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP) AND P.status = 'successful';
 	END
 
-	-- Testing
-	/*DECLARE @MobileNo MOBILE = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
-	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
-	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
-	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);*/
-
 GO
 
 -- 2.3 g
