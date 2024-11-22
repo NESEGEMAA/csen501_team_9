@@ -613,7 +613,7 @@ CREATE PROCEDURE Total_Points_Account
 AS
 	BEGIN
 		SELECT @newPoints = SUM(pointsAmount)
-		FROM Point_Group pg INNER JOIN Benefit b
+		FROM Points_Group pg INNER JOIN Benefit b
 		ON (pg.benefitID = b.benefitID)
 		-- Checking for validity of points group, and considering it not used.
 		WHERE b.mobileNo = @MobileNo AND b.validity_date >= CURRENT_TIMESTAMP;
