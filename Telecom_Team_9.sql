@@ -674,7 +674,7 @@ RETURNS TABLE
 AS
 	RETURN	(
 				SELECT P.*
-				FROM Plan_Usage P INNER JOIN Subscribtion S ON (P.planID = S.planID)
+				FROM Plan_Usage P INNER JOIN Subscription S ON (P.planID = S.planID)
 				-- plan usage records the usasge of a plan periodically not overall, with ~one-month period.
 				WHERE S.mobileNo = @MobileNo AND S.status = 'active' AND MONTH(CURRENT_TIMESTAMP) = MONTH(P.start_date)
 			)
