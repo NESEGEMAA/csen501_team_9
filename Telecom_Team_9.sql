@@ -491,6 +491,26 @@ CREATE PROCEDURE Benefits_Account
 @planID INT
 AS
 	BEGIN
+		DELETE PG FROM Points_Group PG
+		INNER JOIN Benefits B ON (B.benefitID = PG.benefitID)
+		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
+		WHERE S.planID = @planID AND B.mobileNo = @MobileNo
+
+		DELETE C FROM Cashback C
+		INNER JOIN Benefits B ON (B.benefitID = C.benefitID)
+		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
+		WHERE S.planID = @planID AND B.mobileNo = @MobileNo
+
+		DELETE EO FROM Exclusive_Offer EO
+		INNER JOIN Benefits B ON (B.benefitID = EO.benefitID)
+		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
+		WHERE S.planID = @planID AND B.mobileNo = @MobileNo
+
+		DELETE PPB FROM Plan_Provides_Benefits PPB
+		INNER JOIN Benefits B ON (B.benefitID = PPB.benefitID)
+		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
+		WHERE S.planID = @planID AND B.mobileNo = @MobileNo
+
 		DELETE B FROM Benefits B
 		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
 		WHERE S.planID = @planID AND B.mobileNo = @MobileNo
