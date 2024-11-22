@@ -530,10 +530,10 @@ AS
 	END
 
 	-- Testing
-	DECLARE @MobileNo MOBILE = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
+	/*DECLARE @MobileNo MOBILE = '12345678901', @TotalTransactions INT, @TotalPoints DECIMAL(10,2);
 	EXEC Account_Payment_Points @MobileNo, @TotalTransactions OUTPUT, @TotalPoints OUTPUT;
 	PRINT 'Total number of transactions: ' + STR(@TotalTransactions, 10, 0); 
-	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);
+	PRINT 'Total amount of points: ' + STR(@TotalPoints, 10, 2);*/
 
 GO
 
@@ -721,9 +721,9 @@ AS
 	END;
 
 	-- Testing
-	DECLARE @MobileNo MOBILE = '12345678901', @Voucher_id INT;
+	/*DECLARE @MobileNo MOBILE = '12345678901', @Voucher_id INT;
 	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
-	PRINT 'The voucher with the highest value is: ' + STR(@Voucher_id,10,0);
+	PRINT 'The voucher with the highest value is: ' + STR(@Voucher_id,10,0);*/
 
 GO
 
