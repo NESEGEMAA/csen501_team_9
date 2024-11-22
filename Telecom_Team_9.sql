@@ -36,9 +36,7 @@ AS
 			point INT DEFAULT 0,
 			nationalID INT,
 			PRIMARY KEY (mobileNo),
-			FOREIGN KEY (nationalID) REFERENCES Customer_Profile(nationalID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (nationalID) REFERENCES Customer_Profile(nationalID),
 			
 			CONSTRAINT Account_Type CHECK (account_type IN ('Post Paid', 'Prepaid', 'Pay_as_you_go')),
 			CONSTRAINT Customer_Account_Status_Type CHECK (status IN ('active', 'onhold'))
@@ -61,12 +59,8 @@ AS
 			subscription_date DATE,
 			status ALPHA,
 			PRIMARY KEY (mobileNo,planID),
-			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
-			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
+			FOREIGN KEY (planID) REFERENCES Service_Plan(planID),
 
 			CONSTRAINT Subscription_Status_Type CHECK (status IN ('active', 'onhold'))
 		);
@@ -81,12 +75,8 @@ AS
 			mobileNo MOBILE,
 			planID INT,
 			PRIMARY KEY (usageID),
-			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
     
 		CREATE TABLE Payment(
@@ -97,9 +87,7 @@ AS
 			status ALPHA,
 			mobileNo MOBILE,
 			PRIMARY KEY (paymentID),
-			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
 
 			CONSTRAINT Payment_Status_type CHECK (status IN ('successful', 'pending', 'rejected')),
 			CONSTRAINT Payment_Type CHECK (payment_method IN ('cash', 'credit'))
@@ -111,12 +99,8 @@ AS
 			remaining_balance DECIMAL(10,1),
 			extra_amount DECIMAL(10,1),
 			PRIMARY KEY(paymentID),
-			FOREIGN KEY (paymentID) REFERENCES Payment(paymentID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (paymentID) REFERENCES Payment(paymentID),
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Wallet (
@@ -128,8 +112,6 @@ AS
 			mobileNo MOBILE,
 			PRIMARY KEY(walletID),
 			FOREIGN KEY (nationalID) REFERENCES Customer_Profile(nationalID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Transfer_money(
@@ -139,12 +121,8 @@ AS
 			amount DECIMAL(10,2),
 			transfer_date DATE,
 			PRIMARY KEY (walletID1, walletID2, transfer_id),
-			FOREIGN KEY (walletID1) REFERENCES Wallet(walletID)
-				ON DELETE NO ACTION
-				ON UPDATE NO ACTION,
+			FOREIGN KEY (walletID1) REFERENCES Wallet(walletID),
 			FOREIGN KEY (walletID2) REFERENCES Wallet(walletID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Benefits(
@@ -154,9 +132,7 @@ AS
 			status ALPHA,
 			mobileNo MOBILE,
 			PRIMARY KEY (benefitID),
-			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
 
 			CONSTRAINT Benefits_Status_Type CHECK (status IN ('active', 'expired'))
 		);
@@ -167,12 +143,8 @@ AS
 			pointsAmount INT,
 			PaymentID INT,
 			PRIMARY KEY(pointID, benefitID),
-			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
 			FOREIGN KEY (PaymentID) REFERENCES Payment(paymentID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Exclusive_Offer (		
@@ -183,8 +155,6 @@ AS
 			minutes_offered INT,
 			PRIMARY KEY(offerID, benefitID),
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Cashback (
@@ -194,24 +164,16 @@ AS
 			amount INT,
 			credit_date DATE,
 			PRIMARY KEY (CashbackID, benefitID),
-			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
 			FOREIGN KEY (walletID) REFERENCES Wallet(walletID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Plan_Provides_Benefits (
 			benefitID INT,
 			planID INT,
 			PRIMARY KEY (benefitID, planID),
-			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
 			FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Shop(
@@ -227,8 +189,6 @@ AS
 			working_hours ALPHA,
 			PRIMARY KEY (shopID),
 			FOREIGN KEY (shopID) REFERENCES Shop(shopID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE E_shop (
@@ -237,8 +197,6 @@ AS
 			rating INT,
 			PRIMARY KEY (shopID),
 			FOREIGN KEY (shopID) REFERENCES Shop(shopID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Voucher(
@@ -250,12 +208,8 @@ AS
 			shopID INT,
 			redeem_date DATE,
 			PRIMARY KEY (voucherID),
-			FOREIGN KEY (shopID) REFERENCES Shop(shopID)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (shopID) REFERENCES Shop(shopID),
 			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE
 		);
 
 		CREATE TABLE Technical_Support_Ticket(
@@ -265,9 +219,7 @@ AS
 			priority_level INT,
 			status ALPHA,
 			PRIMARY KEY (ticketID),
-			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
-				ON DELETE CASCADE
-				ON UPDATE CASCADE,
+			FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
 
 			CONSTRAINT TST_Status_Type CHECK (status IN ('Open', 'In Progress', 'Resolved'))
 		);
