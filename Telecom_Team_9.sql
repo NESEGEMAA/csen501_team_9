@@ -166,7 +166,7 @@ AS
 			benefitID INT, 
 			pointsAmount INT,
 			PaymentID INT,
-			PRIMARY KEY(pointsID, benefitID),
+			PRIMARY KEY(pointID, benefitID),
 			FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE,
