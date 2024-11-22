@@ -648,9 +648,6 @@ RETURNS TABLE
 AS
 	RETURN (
 		SELECT SUM(U.data_consumption) AS 'Data consumption', SUM(U.minutes_used) AS 'Minutes used', SUM(U.SMS_sent) AS 'SMS sent'
-		FROM (
-			(
-				SELECT U.data_consumption, U.minutes_used, U.SMS_sent
 				FROM Plan_Usage U, Service_Plan P
 		WHERE P.name = @Plan_name AND P.planID = U.planID AND U.start_date >= @start_date AND U.end_date <= @end_date
 			
@@ -787,7 +784,7 @@ AS
 GO
 
 -- 2.4 j
-CREATE PROCEDURE Subscribed_plans_5_Months
+CREATE PROCEDURE Top_Successful_Payments
 @MobileNo MOBILE
 AS
 	BEGIN
