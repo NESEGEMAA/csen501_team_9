@@ -465,7 +465,7 @@ AS
 	RETURN (
 		SELECT C.*
 		FROM Customer_Account C, Subscription S
-		WHERE C.mobileNo = S.mobileNo AND S.planID = @Plan_id AND S.date = @Subscription_Date
+		WHERE C.mobileNo = S.mobileNo AND S.planID = @Plan_id AND S.subscription_date = @Subscription_Date
 	)
 
 GO
@@ -562,7 +562,7 @@ AS
 		
 		SELECT @TransactionAmountAverage = AVG(t.amount)
 		FROM Transfer_money t
-		WHERE t.walletID1 = @Wallet_id AND (t.trasnfer_date BETWEEN @start_date AND @end_date)
+		WHERE t.walletID1 = @Wallet_id AND (t.transfer_date BETWEEN @start_date AND @end_date)
 
 		RETURN @TransactionAmountAverage
 	END
