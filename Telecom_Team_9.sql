@@ -740,7 +740,7 @@ AS
 		FROM Payment p
 		LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
 		LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
-		WHERE p.mobileNo = @MobileNo AND sp.plan_name = @plan_name;
+		WHERE p.mobileNo = @MobileNo AND sp.name = @plan_name;
 
 		IF @payment_amount < @price
 			SET @Remaining_amount = @price - @payment_amount;
