@@ -229,6 +229,10 @@ AS
 
 GO
 
+-- Safe fuse code please
+EXEC createAllTables;
+GO
+
 -- 2.1 c
 CREATE PROCEDURE dropAllTables
 AS
