@@ -817,9 +817,52 @@ AS
 		INSERT INTO Payment
 		VALUES (@amount, CAST(CURRENT_TIMESTAMP AS DATE), @payment_method, 'successful', @MobileNo);
 
+		-- Declaration of variable
+		DECLARE @plan_name ALPHA;
+		DECLARE @remaining_balance DECIMAL(10,1);
+		DECLARE @extra_amount DECIMAL(10,1);
+
+		SET @remaining_balance = dbo.Remaining_plan_amount(@MobileNo, @plan_name);
+		SET @extra_amount = dbo.Extra_plan_amount(@MobileNo, @plan_name);
+
+		SELECT @plan_name = p.name
+		FROM Service_Plan p
+		WHERE p.planID = @plan_id;
+
+		-- Update statement to update the remaining balance.
+		UPDATE Process_Payment
+		SET remaining_balance = @remaining_balance
+		WHERE paymentID IN (
+			SELECT p.paymentID
+			FROM Payment p
+			LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
+			LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
+			WHERE p.mobileNo = @MobileNo AND sp.name = @plan_name
+		);
+
+		-- Update statement to update the extra amount.
+		UPDATE Process_Payment
+		SET extra_amount = @extra_amount
+		WHERE paymentID IN (
+			SELECT p.paymentID
+			FROM Payment p
+			LEFT JOIN Process_Payment pp ON p.paymentID = pp.paymentID
+			LEFT JOIN Service_Plan sp ON pp.planID = sp.planID
+			WHERE p.mobileNo = @MobileNo AND sp.name = @plan_name
+		);
+
+		IF @remaining_balance = 0
+			BEGIN
 		UPDATE Subscription
 		SET status = 'active'
 		WHERE mobileNo = @MobileNo AND planID = @plan_id;
+			END
+		ELSE
+			BEGIN
+				UPDATE Subscription
+				SET status = 'onhold'
+				WHERE mobileNo = @MobileNo AND planID = @plan_id;
+	END
 	END
 
 GO
