@@ -330,6 +330,7 @@ GO
 CREATE PROCEDURE clearAllTables
 AS
 	BEGIN
+		-- The use of DELETE FROM instead of TRUNCATE in this situation prevents constraint errors.
 		DELETE FROM Physical_Shop;
 
 		DELETE FROM E_shop;
@@ -373,6 +374,7 @@ GO
 
 -- 2.2 a
 CREATE VIEW allCustomerAccounts AS
+	-- p.* was not used since 2 columns would be sharing the same name (nationalID) giving an error. 
 	SELECT p.first_name, p.last_name, p.email, p.address, p.date_of_birth, a.*
 	FROM Customer_profile p INNER JOIN Customer_Account a 
 	ON p.nationalID = a.nationalID
@@ -391,14 +393,17 @@ GO
 CREATE VIEW allBenefits AS
 	SELECT * 
 	FROM Benefits B
+	-- selects only active benefits
 	WHERE B.status = 'active'
 
 GO
 
 -- 2.2 d
 CREATE VIEW AccountPayments AS
+	-- P.* was not used since 2 columns would be sharing the same name (mobileNo, status) giving an error. 
 	SELECT P.paymentID, P.amount, P.date_of_payment, P.payment_method, P.status AS 'Payment status', C.*
-	FROM Payment P INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
+	FROM Payment P
+	INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
 GO
 
 -- 2.2 e
@@ -412,6 +417,7 @@ GO
 CREATE VIEW allResolvedTickets AS
 	SELECT *
 	FROM Technical_Support_Ticket
+	-- selects only resolved tickets
 	WHERE status = 'resolved';
 
 GO
@@ -429,6 +435,7 @@ CREATE VIEW E_shopVouchers AS
 	SELECT s.*, e.URL, e.rating, v.voucherID, v.value
 	FROM Shop s
 	INNER JOIN E_shop e ON (s.shopID = e.shopID)
+	-- outer join is used to get all the E-shops and their vouchers *if found*, if not, the shop would still be shown, with NULL for vouchers
 	LEFT OUTER JOIN Voucher v ON(e.shopID = v.shopID);
 
 GO
@@ -439,6 +446,7 @@ CREATE VIEW PhysicalStoreVouchers AS
 	FROM Shop s
 	INNER JOIN Physical_Shop ps ON (s.shopID = ps.shopID)
 	INNER JOIN Voucher v ON (ps.shopID = v.shopID)
+	-- the presence of redemption date is the measurement of whether a voucher was redeemed or not
 	WHERE v.redeem_date IS NOT NULL;
 
 GO
@@ -492,6 +500,8 @@ CREATE PROCEDURE Benefits_Account
 @planID INT
 AS
 	BEGIN
+		-- ON DELETE NO ACTION is the default used in this database
+		-- manual deletion of all records referencing the benefitID, from the benefit to be deleted, is necessary.
 		DELETE PG FROM Points_Group PG
 		INNER JOIN Benefits B ON (B.benefitID = PG.benefitID)
 		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
@@ -516,6 +526,7 @@ AS
 		INNER JOIN Subscription S ON (B.mobileNo = S.mobileNo)
 		WHERE S.planID = @planID AND B.mobileNo = @MobileNo
 
+		-- shows the benefits table after deletion
 		SELECT B.*
 		FROM Benefits B
 	END
@@ -531,6 +542,7 @@ AS
 		SELECT eo.*
 		FROM Exclusive_Offer eo
 		INNER JOIN Benefits b ON eo.benefitID = b.benefitID
+		-- type SMS for an exclusive offer was interpreted as having SMS_offered > 0
 		WHERE b.mobileNo = @MobileNo AND eo.SMS_offered > 0
 	);
 
@@ -546,6 +558,8 @@ AS
 	BEGIN
 		SELECT @TotalTransactions = COUNT(P.PaymentID) , @TotalPoints = SUM(ISNULL(PG.pointsAmount,0))
 		FROM Payment P
+		-- outer join is used to get all payments, whether or not the contributed to points_group
+		-- since they should be considered in the number of transactions
 		LEFT JOIN Points_Group PG ON P.PaymentID = PG.PaymentID
 		WHERE P.mobileNo = @MobileNo AND P.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP) AND P.status = 'successful';
 	END
@@ -650,9 +664,8 @@ RETURNS TABLE
 AS
 	RETURN (
 		SELECT SUM(U.data_consumption) AS 'Data consumption', SUM(U.minutes_used) AS 'Minutes used', SUM(U.SMS_sent) AS 'SMS sent'
-				FROM Plan_Usage U, Service_Plan P
+		FROM Plan_Usage U, Service_Plan P
 		WHERE P.name = @Plan_name AND P.planID = U.planID AND U.start_date >= @start_date AND U.end_date <= @end_date
-			
 	)
 GO
 
@@ -816,7 +829,7 @@ AS
 	BEGIN
 		INSERT INTO Payment
 		VALUES (@amount, CAST(CURRENT_TIMESTAMP AS DATE), @payment_method, 'successful', @MobileNo);
-
+		
 		-- Declaration of variable
 		DECLARE @plan_name ALPHA;
 		DECLARE @remaining_balance DECIMAL(10,1);
@@ -853,16 +866,16 @@ AS
 
 		IF @remaining_balance = 0
 			BEGIN
-		UPDATE Subscription
-		SET status = 'active'
-		WHERE mobileNo = @MobileNo AND planID = @plan_id;
+				UPDATE Subscription
+				SET status = 'active'
+				WHERE mobileNo = @MobileNo AND planID = @plan_id;
 			END
 		ELSE
 			BEGIN
 				UPDATE Subscription
 				SET status = 'onhold'
 				WHERE mobileNo = @MobileNo AND planID = @plan_id;
-	END
+			END
 	END
 
 GO
@@ -886,8 +899,14 @@ AS
 
 		SET @cashback = 0.1 * @paymentAmount
 
+		-- Inserting cashback record into table
 		INSERT INTO Cashback
 		VALUES(@benefit_id, @walletId, @cashback, CAST(CURRENT_TIMESTAMP AS DATE))
+
+		-- Updating wallet balance with cashback amount
+		UPDATE Wallet
+		SET current_balance = current_balance + @cashback
+		WHERE mobileNo = @MobileNo;
 	END
 
 GO
@@ -961,9 +980,10 @@ AS
 				END
 			END
 			-- # possible printing error message
-			-- $ sure
+			PRINT 'Voucher expired';
 		END
 		-- # possible printing error message
+		PRINT 'Invalid number or voucher'
 	END
 
 GO
