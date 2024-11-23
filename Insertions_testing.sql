@@ -259,4 +259,8 @@ EXEC Redeem_voucher_points @MobileNo, @voucher_id;
 SELECT * FROM Customer_Account;
 SELECT * FROM Voucher;
 
+DROP PROCEDURE Wallet_Cashback_Amount;
+DROP DATABASE Telecom_Team_9;
+EXEC createAllTables;
 
+SELECT dbo.Wallet_Cashback_Amount(1,1);
