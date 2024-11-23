@@ -1,8 +1,8 @@
 -- 2.1 a
 CREATE DATABASE Telecom_Team_9;
 GO
-USE Telecom_Team_9;
 
+USE Telecom_Team_9;
 GO
 
 -- Custom datatypes from guidelines
@@ -230,9 +230,8 @@ AS
 GO
 
 -- 2.1 c
-Create Procedure dropAllTables
+CREATE PROCEDURE dropAllTables
 AS
-	-- Update this to drop from sub to parent
 	BEGIN
 		DROP TABLE Physical_Shop;
 
@@ -277,7 +276,7 @@ AS
 GO
 
 -- 2.1 d
-Create Procedure dropAllProceduresFunctionsViews
+CREATE PROCEDURE dropAllProceduresFunctionsViews
 AS
 	BEGIN
 		DROP PROCEDURE
@@ -328,7 +327,7 @@ AS
 GO
 
 -- 2.1 e
-Create Procedure clearAllTables
+CREATE PROCEDURE clearAllTables
 AS
 	BEGIN
 		DELETE FROM Physical_Shop;
@@ -373,7 +372,7 @@ AS
 GO
 
 -- 2.2 a
-Create View allCustomerAccounts AS
+CREATE VIEW allCustomerAccounts AS
 	SELECT p.first_name, p.last_name, p.email, p.address, p.date_of_birth, a.*
 	FROM Customer_profile p INNER JOIN Customer_Account a 
 	ON p.nationalID = a.nationalID
@@ -382,14 +381,14 @@ Create View allCustomerAccounts AS
 GO
 
 -- 2.2 b
-Create View allServicePlans AS
+CREATE VIEW allServicePlans AS
 	SELECT *
 	FROM Service_Plan;
 
 GO
 
 -- 2.2 c
-Create View allBenefits AS
+CREATE VIEW allBenefits AS
 	SELECT * 
 	FROM Benefits B
 	WHERE B.status = 'active'
@@ -397,7 +396,7 @@ Create View allBenefits AS
 GO
 
 -- 2.2 d
-Create View AccountPayments AS
+CREATE VIEW AccountPayments AS
 	SELECT P.paymentID, P.amount, P.date_of_payment, P.payment_method, P.status AS 'Payment status', C.*
 	FROM Payment P INNER JOIN Customer_Account C ON (P.mobileNo = C.mobileNo)
 GO
@@ -727,11 +726,6 @@ AS
 		ORDER BY V.value DESC
 	END;
 
-	-- Testing
-	/*DECLARE @MobileNo MOBILE = '12345678901', @Voucher_id INT;
-	EXEC Account_Highest_Voucher @MobileNo, @Voucher_id OUTPUT;
-	PRINT 'The voucher with the highest value is: ' + STR(@Voucher_id,10,0);*/
-
 GO
 
 -- 2.4 h
@@ -935,7 +929,7 @@ GO
 CREATE ROLE Admin;
 CREATE ROLE Customer;
 
--- Extra: Granting execution of admin functions and procedures to role Admin
+-- Extra: Granting execution of admin FUNCTIONs and PROCEDUREs to role Admin
 GRANT EXECUTE ON dbo.Account_Plan TO Admin;
 GRANT EXECUTE ON dbo.Account_Plan_date TO Admin;
 GRANT EXECUTE ON dbo.Account_Usage_Plan TO Admin;
@@ -947,7 +941,7 @@ GRANT EXECUTE ON dbo.Wallet_Transfer_Amount TO Admin;
 GRANT EXECUTE ON dbo.Wallet_MobileNo TO Admin;
 GRANT EXECUTE ON dbo.Total_Points_Account TO Admin;
 
--- Extra: Granting execution of customer functions and procdure to the role Customer
+-- Extra: Granting execution of customer FUNCTIONs and procdure to the role Customer
 GRANT EXECUTE ON dbo.AccountLoginValidation TO Customer;
 GRANT EXECUTE ON dbo.Consumption TO Customer;
 GRANT EXECUTE ON dbo.Unsubscribed_Plans TO Customer;
