@@ -1,5 +1,7 @@
 -- 2.1 a
 CREATE DATABASE Telecom_Team_9;
+GO
+USE Telecom_Team_9;
 
 GO
 
