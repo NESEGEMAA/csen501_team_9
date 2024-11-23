@@ -560,8 +560,10 @@ AS
 		DECLARE @cashback INT
 		SELECT @cashback = c.amount
 		FROM Cashback c
-		INNER JOIN Plan_Provides_Benefits ppb ON (ppb.benefitID = c.benefitID)
-		WHERE ppb.planID = @planId AND c.walletID = @WalletId;
+		INNER JOIN Benefits b ON (c.benefitID = b.benefitID)
+		INNER JOIN Customer_Account ca ON (b.mobileNo = ca.mobileNo)
+		INNER JOIN Subscription s ON (ca.mobileNo = s.mobileNo)
+		WHERE s.planID = @planId AND c.walletID = @WalletId;
 
 		RETURN @cashback
 	END
